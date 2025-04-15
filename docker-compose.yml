@@ -13,7 +13,7 @@ services:
       - ".:/usr/src/app"
       - "/usr/src/app/node_modules"
     ports:
-      - "8142:80"
+      - "8122:80"
     environment:
       - BUILD_NUMBER=${TAG}
     labels:
