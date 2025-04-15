@@ -24,8 +24,58 @@ interface UserDevices {
 const StyledButton = styled(Button)`
     margin-bottom: 2em`
 
+const TestData: UserDevices = {
+    "userId": "42659",
+    "devices": [
+        {
+            "id": "44925",
+            "name": "Паркинг-А",
+            "signalStrength": 75,
+            "modelName": "ESIM320_2G",
+            "firmware": "V32.00.03",
+            "imei": "357788101744828",
+            "phoneNumber": "79267049648",
+            "status": "up",
+            "deviceKey": "a3fe88282781b73baaf3b5a8561de9915a286c29"
+        },
+        {
+            "id": "42668",
+            "name": "Паркинг-Б",
+            "signalStrength": 75,
+            "modelName": "ESIM320_2G",
+            "firmware": "V32.00.03",
+            "imei": "357788101803053",
+            "phoneNumber": "79267049709",
+            "status": "down",
+            "deviceKey": "c81b19d5d03e22d479742023fdc5a11a192f71b3"
+        },
+        {
+            "id": "38356",
+            "name": "Шлагбаум-Б",
+            "signalStrength": 75,
+            "modelName": "ESIM320",
+            "firmware": "V31.02.00",
+            "imei": "353738084535796",
+            "phoneNumber": "79037758656",
+            "status": "down",
+            "deviceKey": "92ad32a3ad68beda7a1d14e20b0a67cae9817fd4"
+        },
+        {
+            "id": "38344",
+            "name": "Шлагбаум-А",
+            "signalStrength": 75,
+            "modelName": "ESIM320",
+            "firmware": "V31.02.00",
+            "imei": "353738084514114",
+            "phoneNumber": "79031785152",
+            "status": "up",
+            "deviceKey": "64e1fd53355f345c1a0943f1ac06032cad07a1dc"
+        }
+    ]
+}
+
 export const EldesController = () => {
-    const [data, setData] = useState<UserDevices>({userId: "", devices: []});
+    const [data, setData] = useState<UserDevices>({...TestData});
     const [loading, setLoading] = useState(false);
 
     const loadDevices = useCallback(() => {
