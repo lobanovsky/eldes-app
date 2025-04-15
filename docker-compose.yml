@@ -1,0 +1,27 @@
+version: '3.9'
+
+services:
+
+  house-pwa:
+    build:
+      context: .
+      dockerfile: ${DOCKERFILE:-Dockerfile}
+    image: ${CONTAINER_REGISTRY}/house-pwa:${TAG}
+    container_name: house-pwa
+    restart: always
+    volumes:
+      - ".:/usr/src/app"
+      - "/usr/src/app/node_modules"
+    ports:
+      - "8142:80"
+    environment:
+      - BUILD_NUMBER=${TAG}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.gate.rule=Host(`gate.housekpr.ru`)"
+    networks:
+      - housekpr-network
+
+networks:
+  housekpr-network:
+    external: true
