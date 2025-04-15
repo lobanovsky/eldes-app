@@ -1,13 +1,11 @@
-version: '3.9'
-
 services:
 
-  house-pwa:
+  eldes-app:
     build:
       context: .
       dockerfile: ${DOCKERFILE:-Dockerfile}
-    image: ${CONTAINER_REGISTRY}/house-pwa:${TAG}
-    container_name: house-pwa
+    image: ${CONTAINER_REGISTRY}/eldes-app:${TAG}
+    container_name: eldes-app
     restart: always
     volumes:
       - ".:/usr/src/app"
