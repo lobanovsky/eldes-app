@@ -2,7 +2,10 @@ import React from 'react';
 import axios from "axios";
 import {ThemeProvider, createTheme} from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+
+import {SnackbarProvider} from 'notistack';
 import {EldesController} from "./views/eldes";
+
 import './App.css';
 
 
@@ -23,10 +26,12 @@ const theme = createTheme({
 function App() {
     return (
         <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <div className="App">
-                <EldesController/>
-            </div>
+            <SnackbarProvider>
+                <CssBaseline/>
+                <div className="App">
+                    <EldesController/>
+                </div>
+            </SnackbarProvider>
         </ThemeProvider>
     );
 }
