@@ -54,11 +54,11 @@ export const EldesController = () => {
         axios.post(`api/devices/${id}/open`, {key: deviceKey, userId: data.userId})
             .then(resp => {
                 setLoading(false);
-                setData(resp.data);
             })
             .catch(err => {
                 setLoading(false);
-                //todo показать ошибку
+                // @ts-ignore
+                enqueueSnackbar(err.message || err.error  || err.response, {variant: 'error'});
             })
     }, [data.userId]);
 
