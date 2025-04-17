@@ -1,7 +1,7 @@
 {
-  "short_name": "Мой Дом",
-  "name": "Мой Дом",
-  "description": "Управляю своим домом",
+  "short_name": "Шлагбаум",
+  "name": "Шлагбаум",
+  "description": "Открывай шлагбаумы и ворота одним касанием!",
   "icons": [
     {
       "src": "favicon.ico",
@@ -9,12 +9,12 @@
       "type": "image/x-icon"
     },
     {
-      "src": "logo192.png",
+      "src": "logo.jpeg",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "logo512.png",
+      "src": "logo.jpeg",
       "type": "image/png",
       "sizes": "512x512"
     }
