@@ -37,23 +37,23 @@ export const getDevices = (enqueueSnackbar: any, onFinish: ActionCallbackWithDat
                 userId,
                 devices: []
             }
-            const gateA = findDevice(devices, 'Шлагбаум-А');
-            if (gateA?.id) {
-                const gateB = findDevice(devices, 'Шлагбаум-Б');
-                result.devices.push({
-                    name: 'Шлагбаум',
-                    IN: gateA,
-                    OUT: gateB || null
-                });
-            }
-
             const parkingA = findDevice(devices, 'Паркинг-А');
             if (parkingA?.id) {
                 const parkingB = findDevice(devices, 'Паркинг-Б');
                 result.devices.push({
-                    name: 'Ворота паркинга',
+                    name: 'Паркинг',
                     IN: parkingA,
                     OUT: parkingB || null
+                });
+            }
+
+            const gateA = findDevice(devices, 'Шлагбаум-А');
+            if (gateA?.id) {
+                const gateB = findDevice(devices, 'Шлагбаум-Б');
+                result.devices.push({
+                    name: 'Двор',
+                    IN: gateA,
+                    OUT: gateB || null
                 });
             }
             onFinish(true, result);

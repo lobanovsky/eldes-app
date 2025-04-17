@@ -9,14 +9,21 @@ import {Button, styled} from "@mui/material";
 interface GateOpenProps {
     device: Device | null;
     userId: string;
-    type: 'IN' | 'OUT'
+    type: 'IN' | 'OUT';
+    area?: string;
 }
 
 const StyledButton = styled(Button)`
     margin: 1em 0;
+    font-size: 1.5rem;
+    padding: 15px 30px;
+    min-width: 250px;
+    min-height: 60px;
+    width: 100%;
+    text-transform: capitalize;
 `
 
-export const GateOpenButton = ({type, userId, device}: GateOpenProps) => {
+export const GateOpenButton = ({type, userId, device, area}: GateOpenProps) => {
     const [loading, setLoading] = useState(false);
     const {enqueueSnackbar} = useSnackbar();
 
@@ -35,13 +42,21 @@ export const GateOpenButton = ({type, userId, device}: GateOpenProps) => {
             })
     }, [userId]);
 
+    // Use different colors for Паркинг buttons
+    const getButtonColor = () => {
+        if (area === 'Паркинг') {
+            return type === 'IN' ? 'secondary' : 'warning';
+        }
+        return type === 'IN' ? 'success' : 'primary';
+    };
+
     return <StyledButton
-        color={type === 'IN' ? 'success' : 'error'}
+        color={getButtonColor()}
         variant="contained"
         size='large'
         loading={loading}
-        startIcon={type == 'IN' ? <GetAppIcon/> : <UploadIcon/>}
+        startIcon={type == 'IN' ? <GetAppIcon fontSize="large"/> : <UploadIcon fontSize="large"/>}
         onClick={openEldes}>
-        {type === 'IN' ? 'въезд' : 'выезд'}
+        {type === 'IN' ? 'Заехать' : 'Выехать'}
     </StyledButton>
 }

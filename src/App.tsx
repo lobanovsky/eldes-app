@@ -21,6 +21,24 @@ const theme = createTheme({
     },
     palette: {
         // mode: 'dark',
+        primary: {
+            main: '#a5d6a7', // Pastel green
+        },
+        secondary: {
+            main: '#b39ddb', // Pastel purple
+        },
+        success: {
+            main: '#c5e1a5', // Pastel light green
+        },
+        warning: {
+            main: '#ffe0b2', // Pastel orange
+        },
+        error: {
+            main: '#ffcdd2', // Pastel red
+        },
+        info: {
+            main: '#b3e5fc', // Pastel blue
+        },
     },
 });
 
@@ -33,14 +51,14 @@ function App() {
             <SnackbarProvider>
                 <CssBaseline/>
                 <div className="App">
+                    <StyledContainer className="footer" style={{padding: '0.5em 0'}}>
+                        Сделано в
+                        {' '}
+                        <a href="https://lobanovsky.ru" style={{ textDecoration: 'none', color: '#1976d2' }}>Бюро Лобановского</a>
+                        <span style={{color: 'red', marginLeft: '0.5em'}}>♡</span>
+                    </StyledContainer>
                     <StyledContainer className="app-content" style={{height: 'calc(100vh - 64px)'}}>
                         <EldesController/>
-                    </StyledContainer>
-                    <StyledContainer className="footer">
-                        сделано в
-                        {' '}
-                        <Button size="small" href="https://lobanovsky.ru">Бюро Лобановского</Button>
-                        ♡
                     </StyledContainer>
                 </div>
             </SnackbarProvider>
