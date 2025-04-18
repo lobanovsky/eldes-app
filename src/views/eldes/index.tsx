@@ -1,14 +1,12 @@
 import {useCallback, useEffect, useState} from "react";
 import {AxiosError, AxiosResponse} from 'axios';
-import {Button, Card, CardContent, CircularProgress, styled, Typography, Box} from "@mui/material";
-import GetAppIcon from '@mui/icons-material/GetApp';
-import UploadIcon from '@mui/icons-material/Upload';
-import HomeIcon from '@mui/icons-material/Home';
-import LocalParkingIcon from '@mui/icons-material/LocalParking';
-import axios from "axios";
+import styled from 'styled-components';
+import {Button, Card, CardContent, CircularProgress, Typography} from "@mui/material";
 import {useSnackbar} from 'notistack';
 import {UserDevices, getDevices, Device} from "./services";
 import {GateOpenButton} from "./open-button";
+import { FlexBox } from "components/styled";
+
 
 
 // @ts-ignore
@@ -16,6 +14,13 @@ export interface ServerError extends Error, AxiosError, AxiosResponse {
     error?: string;
 }
 
+
+
+const StyledCard = styled(Card)`
+    min-width: 300px;
+    width: 100%;
+    //height: 100%;
+`
 
 
 export const EldesController = () => {
@@ -41,33 +46,34 @@ export const EldesController = () => {
         loadDevices();
     }, []);
 
-    return (<div style={{padding: '1em 0.5em', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', height: '100vh'}}>
-        {/*<Typography variant="h6" gutterBottom style={{marginBottom: '1em'}}>*/}
-        {/*    Открыть шлагбаум*/}
-        {/*</Typography>*/}
-        {loading && <CircularProgress/>}
-        {data.devices.map((area) =>
-            <Card sx={{width: '100%', maxWidth: '600px'}} style={{marginBottom: 20}} key={area.name}>
-                <CardContent>
-                    <Box display="flex" alignItems="center" justifyContent="center" mb={1}>
-                        {area.name === 'Двор' ? 
-                            <HomeIcon fontSize="large" style={{ marginRight: '8px', color: '#4caf50' }} /> : 
-                            <LocalParkingIcon fontSize="large" style={{ marginRight: '8px', color: '#9c27b0' }} />
-                        }
-                        <Typography variant="h6" component="div" style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
-                            {area.name}
-                        </Typography>
-                    </Box>
-                    <div className='buttons'>
-                        {area.OUT?.id && <div>
-                            <GateOpenButton type='OUT' userId={data.userId} device={area.OUT} area={area.name}/>
-                        </div>}
-                        <div>
-                            <GateOpenButton type='IN' userId={data.userId} device={area.IN} area={area.name}/>
-                        </div>
-                    </div>
-                </CardContent>
-            </Card>
-        )}
-    </div>)
+
+    // @ts-ignore
+    return (
+        // <div>
+        // @ts-ignore
+        <FlexBox flex-direction='column'>
+            {loading && <CircularProgress/>}
+            {data.devices.map((area) =>
+                <div className='card-container' key={area.name}>
+                    <StyledCard key={area.name}>
+                        <CardContent style={{height: '100%'}}>
+                            <Typography variant="h6" component="div" style={{marginBottom: '0.5em'}}>
+                                {area.name}
+                            </Typography>
+                            {/*@ts-ignore */}
+                            {/*<FlexBox flex-direction='column' height='calc(100% - 32px - 1em)'>*/}
+                            <div className='buttons'>
+                                <GateOpenButton type='IN' userId={data.userId} device={area.IN}/>
+
+                                {area.OUT?.id &&
+                                    <GateOpenButton type='OUT' userId={data.userId} device={area.OUT}/>
+                                }
+                            </div>
+                            {/*</FlexBox>*/}
+                        </CardContent>
+                    </StyledCard>
+                </div>
+            )}
+        </FlexBox>
+)
 }

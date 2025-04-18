@@ -37,11 +37,13 @@ export const getDevices = (enqueueSnackbar: any, onFinish: ActionCallbackWithDat
                 userId,
                 devices: []
             }
+
+            //Паркинг первый, чтобы он был выше в списке - т.к. не часто используется
             const parkingA = findDevice(devices, 'Паркинг-А');
             if (parkingA?.id) {
                 const parkingB = findDevice(devices, 'Паркинг-Б');
                 result.devices.push({
-                    name: 'Паркинг',
+                    name: 'Ворота паркинга',
                     IN: parkingA,
                     OUT: parkingB || null
                 });
@@ -51,11 +53,13 @@ export const getDevices = (enqueueSnackbar: any, onFinish: ActionCallbackWithDat
             if (gateA?.id) {
                 const gateB = findDevice(devices, 'Шлагбаум-Б');
                 result.devices.push({
-                    name: 'Двор',
+                    name: 'Шлагбаум',
                     IN: gateA,
                     OUT: gateB || null
                 });
             }
+
+
             onFinish(true, result);
         })
         .catch((err: ServerError) => {

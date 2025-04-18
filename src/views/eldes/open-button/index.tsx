@@ -5,25 +5,27 @@ import {useSnackbar} from "notistack";
 import GetAppIcon from "@mui/icons-material/GetApp";
 import UploadIcon from '@mui/icons-material/Upload';
 import {Button, styled} from "@mui/material";
+import {StyledComponentProps} from "../../../components/styled";
 
 interface GateOpenProps {
     device: Device | null;
     userId: string;
-    type: 'IN' | 'OUT';
-    area?: string;
+    type: 'IN' | 'OUT'
 }
 
-const StyledButton = styled(Button)`
+const StyledButton = styled(Button)<any>`
     margin: 1em 0;
-    font-size: 1.5rem;
-    padding: 15px 30px;
-    min-width: 250px;
-    min-height: 60px;
     width: 100%;
-    text-transform: capitalize;
+    height: 80px;
+    font-size: 24px;
+    background-color: ${(p: any) => p.type === 'success' ? 'rgb(46, 125, 50)' : 'rgb(125, 73, 28)'};
+    //
+    //flex: 1 0 auto;
+    //width: 100%;
+    //max-height: 80px;
 `
 
-export const GateOpenButton = ({type, userId, device, area}: GateOpenProps) => {
+export const GateOpenButton = ({type, userId, device}: GateOpenProps) => {
     const [loading, setLoading] = useState(false);
     const {enqueueSnackbar} = useSnackbar();
 
@@ -42,21 +44,14 @@ export const GateOpenButton = ({type, userId, device, area}: GateOpenProps) => {
             })
     }, [userId]);
 
-    // Use different colors for Паркинг buttons
-    const getButtonColor = () => {
-        if (area === 'Паркинг') {
-            return type === 'IN' ? 'secondary' : 'warning';
-        }
-        return type === 'IN' ? 'success' : 'primary';
-    };
-
     return <StyledButton
-        color={getButtonColor()}
+        className='custom-button'
+        type={type === 'IN' ? 'success' : 'error'}
         variant="contained"
         size='large'
         loading={loading}
-        startIcon={type == 'IN' ? <GetAppIcon fontSize="large"/> : <UploadIcon fontSize="large"/>}
+        startIcon={type == 'IN' ? <GetAppIcon style={{fontSize: '32px'}}/> : <UploadIcon style={{fontSize: '32px'}}/>}
         onClick={openEldes}>
-        {type === 'IN' ? 'Заехать' : 'Выехать'}
+        {type === 'IN' ? 'въезд' : 'выезд'}
     </StyledButton>
 }
