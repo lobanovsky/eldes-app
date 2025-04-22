@@ -6,7 +6,7 @@ import {Button, styled, SvgIcon} from "@mui/material";
 
 interface GateOpenProps {
     device: Device | null;
-    userId: string;
+    userid: string;
     type: 'IN' | 'OUT'
     color: string;
     loadDevices: () => void;
@@ -25,7 +25,7 @@ const StyledButton = styled(Button)<{ type: string }>`
     //max-height: 80px;
 `
 
-export const GateOpenButton = ({type, userId, device, color, loadDevices}: GateOpenProps) => {
+export const GateOpenButton = ({type, userid, device, color, loadDevices}: GateOpenProps) => {
     const [loading, setLoading] = useState(false);
     const {enqueueSnackbar} = useSnackbar();
 
@@ -34,7 +34,7 @@ export const GateOpenButton = ({type, userId, device, color, loadDevices}: GateO
             return;
         }
         setLoading(true);
-        axios.post(`api/devices/${device.id}/open`, {key: device.deviceKey, userId})
+        axios.post(`api/devices/${device.id}/open`, {key: device.deviceKey, userid: userid})
             .then(resp => {
                 setLoading(false);
             })
@@ -48,7 +48,7 @@ export const GateOpenButton = ({type, userId, device, color, loadDevices}: GateO
                     enqueueSnackbar(errorMsg, {variant: 'error'});
                 }
             })
-    }, [userId, device?.deviceKey, loadDevices]);
+    }, [userid, device?.deviceKey, loadDevices]);
 
     return <StyledButton
         className='custom-button'

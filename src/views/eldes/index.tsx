@@ -76,7 +76,7 @@ export const EldesController = () => {
                                 <GateOpenButton
                                     loadDevices={loadDevices}
                                     color={ButtonColors[area.area].IN}
-                                    type='IN' userId={data.userId}
+                                    type='IN' userid={data.userId}
                                     device={area.IN}/>
 
                                 {area.OUT?.id &&
@@ -84,7 +84,7 @@ export const EldesController = () => {
                                         loadDevices={loadDevices}
                                         color={ButtonColors[area.area].OUT}
                                         type='OUT'
-                                        userId={data.userId}
+                                        userid={data.userId}
                                         device={area.OUT}/>
                                 }
                             </div>
