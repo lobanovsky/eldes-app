@@ -2,17 +2,14 @@ import {Device} from "../services";
 import {useCallback, useState} from "react";
 import axios from "axios";
 import {useSnackbar} from "notistack";
-import GetAppIcon from "@mui/icons-material/GetApp";
-import UploadIcon from '@mui/icons-material/Upload';
 import {Button, styled, SvgIcon} from "@mui/material";
-
-// import styled from "styled-components";
 
 interface GateOpenProps {
     device: Device | null;
     userId: string;
     type: 'IN' | 'OUT'
     color: string;
+    loadDevices: () => void;
 }
 
 const StyledButton = styled(Button)<{ type: string }>`
@@ -28,7 +25,7 @@ const StyledButton = styled(Button)<{ type: string }>`
     //max-height: 80px;
 `
 
-export const GateOpenButton = ({type, userId, device, color}: GateOpenProps) => {
+export const GateOpenButton = ({type, userId, device, color, loadDevices}: GateOpenProps) => {
     const [loading, setLoading] = useState(false);
     const {enqueueSnackbar} = useSnackbar();
 
@@ -42,10 +39,16 @@ export const GateOpenButton = ({type, userId, device, color}: GateOpenProps) => 
                 setLoading(false);
             })
             .catch(err => {
+                const errorMsg = JSON.stringify(err.response?.data ||  err.message || err.error);
                 setLoading(false);
-                enqueueSnackbar(err.message || err.error || err.response, {variant: 'error'});
+                if (err.status === 401) {
+                    loadDevices();
+                }
+                else {
+                    enqueueSnackbar(errorMsg, {variant: 'error'});
+                }
             })
-    }, [userId]);
+    }, [userId, device?.deviceKey, loadDevices]);
 
     return <StyledButton
         className='custom-button'

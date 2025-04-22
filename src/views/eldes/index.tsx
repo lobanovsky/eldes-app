@@ -43,25 +43,12 @@ export const EldesController = () => {
 
     const loadDevices = useCallback(() => {
         setLoading(true);
-        getDevices(enqueueSnackbar, (isSuccess, loadedMap, error) => {
+        getDevices(enqueueSnackbar, (isSuccess, loadedMap) => {
             setLoading(false);
-            if (isSuccess) {
-                if (loadedMap && Object.keys(loadedMap).length)
-                    setData(loadedMap);
-
-            } else {
-                const errorMsg = error?.message || error?.error || error?.response;
-                if (error?.status === 401) {
-                    if (!firstUnauthorized) {
-                        firstUnauthorized = true;
-                        loadDevices();
-                    } else {
-                        enqueueSnackbar(JSON.stringify(errorMsg), {variant: 'error'});
-                    }
-                } else {
-                    enqueueSnackbar(JSON.stringify(errorMsg), {variant: 'error'});
-                }
+            if (isSuccess && loadedMap?.devices.length) {
+                setData(loadedMap);
             }
+
         })
     }, []);
 
@@ -87,12 +74,14 @@ export const EldesController = () => {
                             {/*<FlexBox flex-direction='column' height='calc(100% - 32px - 1em)'>*/}
                             <div className='buttons'>
                                 <GateOpenButton
+                                    loadDevices={loadDevices}
                                     color={ButtonColors[area.area].IN}
                                     type='IN' userId={data.userId}
                                     device={area.IN}/>
 
                                 {area.OUT?.id &&
                                     <GateOpenButton
+                                        loadDevices={loadDevices}
                                         color={ButtonColors[area.area].OUT}
                                         type='OUT'
                                         userId={data.userId}

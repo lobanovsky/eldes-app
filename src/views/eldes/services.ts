@@ -64,10 +64,11 @@ export const getDevices = (enqueueSnackbar: any, onFinish: ActionCallbackWithDat
             }
 
 
-            onFinish(true, result, null);
+            onFinish(true, result);
         })
         .catch((err: ServerError) => {
-
-            onFinish(false, null,err);
+            const errorMsg  = JSON.stringify(err.message || err.error  || err.response);
+            enqueueSnackbar(errorMsg, {variant: 'error'});
+            onFinish(false, null);
         })
 }
