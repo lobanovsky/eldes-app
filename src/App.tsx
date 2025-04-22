@@ -33,7 +33,7 @@ function App() {
         <ThemeProvider theme={theme}>
             <SnackbarProvider>
                 <CssBaseline/>
-                <div className="App">
+                <div className="App" style={{backgroundImage: 'url(\'/background.jpg\')', backgroundColor: 'rgba(255, 255, 255, 0.5)'}}>
                     <AppHeader/>
                     <StyledContainer className="app-content" style={{paddingBottom: '2em'}}>
                         <EldesController/>

@@ -9,14 +9,15 @@ const StyledContainer = styled(Container)`
 export const AppHeader = () => {
     return <StyledContainer className="footer" style={{height: 'calc(100vh - 732px)'}}>
         {/*@ts-ignore*/}
-        <Card style={{height:'100%', backgroundColor: 'rgba(255, 255, 255, 0.85)'}}>
+        <Card style={{height:'100%', backgroundColor: 'rgba(255, 255, 255, 0.95)'}}>
             <CardContent style={{height: '100%'}}>
                 <FlexBox justifyContent='center'>
                     <div>
-                        сделано в
+                        Сделано в
                         {' '}
-                        <Button size="small" href="https://lobanovsky.ru">Бюро Лобановского</Button>
-                        ♡
+                        <a href="https://lobanovsky.ru" target="_blank" style={{textTransform: 'none', color: '#1976d2', textDecoration: 'none'}}>Бюро Лобановского</a>
+                        &nbsp;
+                        <span style={{color: 'red'}}>❤️</span>
                     </div>
                 </FlexBox>
             </CardContent>

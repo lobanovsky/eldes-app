@@ -1,7 +1,8 @@
 import axios from "axios";
 import {ServerError} from "./index";
 
-export type ActionCallbackWithData<T> = (isSuccess: boolean, data?: T | null) => void;
+export type AreaType = 'PARKING' | "TERRITORY";
+export type ActionCallbackWithData<T> = (isSuccess: boolean, data?: T | null, serverError?: ServerError  | null) => void;
 export interface Device {
     id: string;
     name: string;
@@ -16,6 +17,7 @@ export interface Device {
 
 export interface AreaGate {
     name: string;
+    area: AreaType,
     IN: Device | null;
     OUT: Device | null
 }
@@ -43,7 +45,8 @@ export const getDevices = (enqueueSnackbar: any, onFinish: ActionCallbackWithDat
             if (parkingA?.id) {
                 const parkingB = findDevice(devices, 'Паркинг-Б');
                 result.devices.push({
-                    name: 'Ворота паркинга',
+                    name: 'Паркинг',
+                    area: "PARKING",
                     IN: parkingA,
                     OUT: parkingB || null
                 });
@@ -53,18 +56,18 @@ export const getDevices = (enqueueSnackbar: any, onFinish: ActionCallbackWithDat
             if (gateA?.id) {
                 const gateB = findDevice(devices, 'Шлагбаум-Б');
                 result.devices.push({
-                    name: 'Шлагбаум',
+                    name: 'Двор',
+                    area: "TERRITORY",
                     IN: gateA,
                     OUT: gateB || null
                 });
             }
 
 
-            onFinish(true, result);
+            onFinish(true, result, null);
         })
         .catch((err: ServerError) => {
-            // @ts-ignore
-            enqueueSnackbar(err.message || err.error  || err.response, {variant: 'error'});
-            onFinish(false);
+
+            onFinish(false, null,err);
         })
 }
