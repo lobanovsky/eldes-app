@@ -76,16 +76,19 @@ export const EldesController = () => {
                                 <GateOpenButton
                                     loadDevices={loadDevices}
                                     color={ButtonColors[area.area].IN}
-                                    type='IN' userid={data.userId}
-                                    device={area.IN}/>
+                                    type='IN'
+                                    userId={data.userId}
+                                    device={area.IN}
+                                />
 
                                 {area.OUT?.id &&
                                     <GateOpenButton
                                         loadDevices={loadDevices}
                                         color={ButtonColors[area.area].OUT}
                                         type='OUT'
-                                        userid={data.userId}
-                                        device={area.OUT}/>
+                                        userId={data.userId}
+                                        device={area.OUT}
+                                    />
                                 }
                             </div>
                             {/*</FlexBox>*/}
