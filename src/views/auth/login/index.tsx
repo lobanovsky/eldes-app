@@ -23,9 +23,9 @@ export function LoginView() {
     }, []);
 
     return (
-        <div className="view login">
+        <div className="view login" style={{height: '100%'}}>
             {/*@ts-ignore*/}
-            <FlexBox>
+            <FlexBox justifyContent="center" height='100%'>
                 {/*@ts-ignore*/}
                 {formType === 'LOGIN' &&
                     <LoginForm  showRegistration={showRegistration} showResetPassword={showResetPassword}/>}

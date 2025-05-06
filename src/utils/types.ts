@@ -10,6 +10,7 @@ export interface UserInfo  {
 export interface LoginData {
     token: string;
     loginPassword?: string;
+    loginEmail?: string;
     user: UserInfo
 }
 

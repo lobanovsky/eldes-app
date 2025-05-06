@@ -5,7 +5,6 @@ import {ThemeProvider, createTheme} from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import {SnackbarProvider} from 'notistack';
 
-import {AppHeader} from "components/layout/header";
 import {getAuth} from "store/auth/selectors";
 import {logout} from "store/auth/reducer";
 import {EldesController} from "views/eldes";
@@ -15,6 +14,7 @@ import './App.css';
 import {IS_DEBUG} from "./utils/constants";
 import axios from "axios";
 import {Loading} from "./components/loading";
+import {AuthDebugButtons} from "./components/auth/DebugButtons";
 
 const theme = createTheme({
     colorSchemes: {
@@ -26,7 +26,9 @@ const theme = createTheme({
 });
 
 const StyledContainer = styled(Container)`
-    padding: 1em 1em`
+    padding: 1em 1em;
+    height: 100%;
+`
 
 function App() {
     const dispatch = useDispatch();
@@ -49,25 +51,15 @@ function App() {
 
     return (
         <ThemeProvider theme={theme}>
-            <SnackbarProvider>
+            <SnackbarProvider autoHideDuration={3000}>
                 <CssBaseline/>
-                <div className="App"
-                     style={{backgroundImage: 'url(\'/background.jpg\')', backgroundColor: 'rgba(255, 255, 255, 0.5)'}}>
-                    <AppHeader/>
-                    {IS_DEBUG && !!user.user.id && <Button onClick={() => {
-                        axios.delete(`api/private/users/${user.user.id}`)
-                            .then(r => {
-                                dispatch(logout());
-                            })
-                            .catch(e => {
-                                console.error(e);
-                            })
-                    }} variant="contained" color="primary">Удалить себя</Button>}
+                <div className="App" style={{backgroundColor: '#F6F0F0', position: 'relative'}}>
+                    {/*<AppHeader/>*/}
+                    <AuthDebugButtons/>
                     <StyledContainer className="app-content" style={{paddingBottom: '2em'}}>
                         {isCheckingToken && <Loading/>}
                         {/*@ts-ignore*/}
                         {isUserLoggedIn && user?.token && !isCheckingToken ? <EldesController/> : <LoginView/>}
-
                     </StyledContainer>
                 </div>
             </SnackbarProvider>

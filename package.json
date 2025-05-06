@@ -9,7 +9,6 @@
     "@mui/icons-material": "^7.0.2",
     "@mui/material": "^7.0.2",
     "@mui/styled-engine-sc": "^7.0.2",
-    "@react-input/mask": "^2.0.4",
     "@reduxjs/toolkit": "^2.7.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -24,7 +23,7 @@
     "notistack": "^3.0.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-input-mask": "^2.0.4",
+    "react-imask": "^7.6.1",
     "react-redux": "^9.2.0",
     "react-scripts": "5.0.1",
     "redux-persist": "^6.0.0",
@@ -68,8 +67,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@types/react-input-mask": "^3.0.6"
   }
 }

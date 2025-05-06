@@ -19,10 +19,10 @@ export const FlexBox = styled.div<StyledComponentProps<FlexBoxProps>>`
     flex-direction: ${(p: any) => p['flex-direction'] || 'column'};
     justify-content:  ${(p: any) => p.justifyContent || 'flex-end'};
     width: ${(p: any) => (p?.widthPercent || 0) > 0 ? `${p.widthPercent}%` : 'auto'};
-    height: ${(p: any) => p.height || '100%'};
+    height: ${(p: any) => p.height || 'auto'};
 `;
 
-export const LowercasedButton = styled(Button)`
+export const SimpleButton = styled(Button)`
     text-transform: none !important;
 `
 

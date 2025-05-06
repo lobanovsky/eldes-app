@@ -4,7 +4,7 @@ import {Button, Card, CardContent, Typography} from "@mui/material";
 import axios from "axios";
 import {useSnackbar} from "notistack";
 
-import {FlexBox, FormInput, LowercasedButton} from "components/styled";
+import {FlexBox, FormInput, SimpleButton} from "components/styled";
 import {useLoading} from "hooks/use-loading";
 import {loginError, loginStarted} from "store/auth/reducer";
 import {EmailRegex} from "utils/constants";
@@ -12,9 +12,14 @@ import {VoidFn} from "utils/types";
 import {getAuth} from "store/auth/selectors";
 import {onSuccessLoadUser} from "../../helpers";
 import {PasswordInput} from "../components/PasswordInput";
+import {getErrorMessage} from "../../../../../utils/notifications";
 
 
-export const LoginForm = ({showRegistration, showResetPassword, savedPassword = ''}: { showRegistration: VoidFn, showResetPassword: VoidFn, savedPassword?: string }) => {
+export const LoginForm = ({showRegistration, showResetPassword, savedPassword = ''}: {
+    showRegistration: VoidFn,
+    showResetPassword: VoidFn,
+    savedPassword?: string
+}) => {
     const authState = useSelector(getAuth);
     const dispatch = useDispatch();
 
@@ -22,7 +27,7 @@ export const LoginForm = ({showRegistration, showResetPassword, savedPassword = 
     const [loading, showLoading, hideLoading] = useLoading();
     const [credentials, setCredentials] = useState<{ email: string, password: string }>(() => {
         return ({
-            email: '',
+            email: authState.user.loginEmail || '',
             password: authState.user.loginPassword || ''
         });
     });
@@ -46,8 +51,7 @@ export const LoginForm = ({showRegistration, showResetPassword, savedPassword = 
             })
             .catch((err) => {
                 hideLoading();
-                const errorMsg = JSON.stringify(err.message || err.error || err.response);
-                enqueueSnackbar(errorMsg, {variant: 'error'})
+                enqueueSnackbar(getErrorMessage('Не удалось авторизоваться', err), {variant: 'error'})
                 dispatch(loginError());
             })
     }, [credentials.email, credentials.password]);
@@ -76,7 +80,7 @@ export const LoginForm = ({showRegistration, showResetPassword, savedPassword = 
     }, [doLogin, formValidState.email, formValidState.password]);
 
     return (
-        <Card style={{width: 400}} onKeyDown={onLoginFormClick}>
+        <Card style={{width: '100%', maxWidth: 400}} onKeyDown={onLoginFormClick}>
             <CardContent style={{height: '100%'}}>
                 <Typography gutterBottom variant="h5" component="div">
                     Вход в систему
@@ -98,27 +102,27 @@ export const LoginForm = ({showRegistration, showResetPassword, savedPassword = 
                         onChange={onChangePassword}
                     />
                 </div>
-                <FlexBox style={{marginTop: '2em'}}>
-                    <Button
+                <FlexBox style={{marginTop: '1em'}}>
+                    <SimpleButton
                         style={{width: '100%'}}
                         variant='contained'
                         onClick={doLogin}
                         disabled={!formValidState.email || !formValidState.password}>
-                        Войти</Button>
+                        Войти</SimpleButton>
                 </FlexBox>
                 <FlexBox flex-direction={'row'} style={{marginTop: '1em'}} justifyContent='space-between'>
-                    <LowercasedButton
+                    <SimpleButton
                         variant='text'
                         // onClick={doLogin}
                         // disabled={!formValidState.email || !formValidState.password}>
                     >
-                        Забыли пароль?</LowercasedButton>
-                    <LowercasedButton
+                        Забыли пароль?</SimpleButton>
+                    <SimpleButton
                         variant='text'
                         onClick={showRegistration}
                         // disabled={!formValidState.email || !formValidState.password}>
                     >
-                        Регистрация</LowercasedButton>
+                        Регистрация</SimpleButton>
                 </FlexBox>
             </CardContent>
         </Card>

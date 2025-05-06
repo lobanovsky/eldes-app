@@ -16,6 +16,7 @@ const StyledButton = styled(Button)<{ color: string }>`
     height: 80px;
     color: rgb(8, 14, 12);
     font-size: 24px;
+    text-transform: none !important;
     background-color: ${(p: any) => p.color || 'gray'};
     //
     //flex: 1 0 auto;

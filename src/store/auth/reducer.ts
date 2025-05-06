@@ -1,17 +1,18 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { LoginData } from 'utils/types';
+import {LoginData, UserInfo} from 'utils/types';
 
+export const EMPTY_USER_DATA: UserInfo = {
+    id: 0,
+    email: '',
+    phoneNumber: '',
+    registrationDate: '',
+    isActive: false
+}
 export const EMPTY_USER: LoginData = {
     token: '',
     loginPassword: '',
-    user: {
-        id: 0,
-        email: '',
-        phoneNumber: '',
-        registrationDate: '',
-        isActive: false
-    }
+    user: {...EMPTY_USER_DATA}
 };
 
 export interface AuthStoreState {
@@ -54,8 +55,9 @@ const authSlice = createSlice({
             state.isCheckingToken = false;
             state.user = EMPTY_USER;
         },
-        loginPasswordGenerated: (state: AuthStoreState,{ payload }: PayloadAction<string>) => {
-            state.user.loginPassword = payload;
+        loginPasswordGenerated: (state: AuthStoreState,{ payload }: PayloadAction<{password: string, email: string}>) => {
+            state.user.loginPassword = payload.password;
+            state.user.loginEmail = payload.email;
             state.isCheckingToken = false;
         },
     }

@@ -3,59 +3,60 @@ import {useDispatch} from "react-redux";
 import {Button, Card, CardContent, TextFieldProps, Typography} from "@mui/material";
 import axios, {AxiosResponse} from "axios";
 import {useSnackbar} from "notistack";
-import { InputMask, type InputMaskProps, useMask } from '@react-input/mask';
 
-import {FlexBox, FormInput, LowercasedButton} from "components/styled";
+import {FlexBox, FormInput, SimpleButton} from "components/styled";
 import {useLoading} from "hooks/use-loading";
-import {loginPasswordGenerated, loginStarted} from "store/auth/reducer";
+import {EMPTY_USER, EMPTY_USER_DATA, loginPasswordGenerated, loginStarted} from "store/auth/reducer";
 import {EmailRegex} from "utils/constants";
 import {UserInfo, VoidFn} from "utils/types";
+import {TextMaskCustom} from "../components/MaskedInput";
+import {getErrorMessage} from "../../../../../utils/notifications";
 
 
+const PhoneRegex = /^\+7\(\d{3}\)(\s?)\d{3}(\s?)\d{2}(\s?)\d{2}$/;
 
 export const RegistrationForm = ({showLogin}: { showLogin: VoidFn }) => {
     const dispatch = useDispatch();
     const {enqueueSnackbar} = useSnackbar();
     const [isLoading, showLoading, hideLoading] = useLoading();
-    // const inputRef = useMask({
-    //     mask: '+0 (___) ___-__-__',
-    //     replacement: { _: /\d/ },
-    // });
 
     const [credentials, setCredentials] = useState<{ email: string, phoneNumber: string }>({
         email: '',
         phoneNumber: ''
     });
 
-    const formValidState = useMemo(() => ({
-        email: EmailRegex.test(credentials.email || ''),
-        //todo валидация номера телефона; Возможно прикрутить маску
-        phoneNumber: !!(credentials.phoneNumber || '').length
-    }), [credentials.email, credentials.phoneNumber]);
+    const formValidState = useMemo(() => {
+        return ({
+            email: EmailRegex.test(credentials.email || ''),
+            phoneNumber: PhoneRegex.test(credentials.phoneNumber || ''),
+        })
+    }, [credentials.email, credentials.phoneNumber]);
 
 
     const doLogin = useCallback(() => {
-        dispatch(loginStarted());
         showLoading();
         axios.post('/api/auth/register', {
             email: credentials.email,
             phoneNumber: credentials.phoneNumber,
         })
             // @ts-ignore
-            .then(({data = {}}: AxiosResponse<{message: sttring, password: string, user: UserInfo}> = {}) => {
-                let msg = data.message || 'Вы успешно зарегистрировались!';
-                if (data.password) {
-                    msg = `Вы успешно зарегистрировались. Ваш пароль: ${data.password}. Также мы прислали его на вашу почту.`
+            .then(({
+                       data: {message = '', password = '', user} = {
+                           message: '', password: '', user: EMPTY_USER_DATA
+                       }
+                   }: AxiosResponse<{ message: string, password: string, user: UserInfo }> = {}) => {
+                let msg = message || 'Вы успешно зарегистрировались!';
+                if (password) {
+                    msg = `Вы успешно зарегистрировались. Ваш пароль: ${password}. Также мы прислали его на вашу почту.`
                 }
-                enqueueSnackbar(msg, {variant: 'success'})
+                enqueueSnackbar(msg, {variant: 'success', autoHideDuration: password ? 10000 : 3000});
                 hideLoading();
-                dispatch(loginPasswordGenerated(data.password));
+                dispatch(loginPasswordGenerated({password, email: user.email}));
                 showLogin();
             })
             .catch((err) => {
                 hideLoading();
-                const errorMsg = JSON.stringify(err.message || err.error || err.response);
-                enqueueSnackbar(errorMsg, {variant: 'error'})
+                enqueueSnackbar(getErrorMessage('Не удалось зарегистрироваться', err), {variant: 'error'})
             })
     }, [credentials.email, credentials.phoneNumber]);
 
@@ -84,7 +85,7 @@ export const RegistrationForm = ({showLogin}: { showLogin: VoidFn }) => {
 
 
     return (
-        <Card style={{width: 400}} onKeyDown={onFormClick}>
+        <Card style={{width: '100%', maxWidth: 400}} onKeyDown={onFormClick}>
             <CardContent style={{height: '100%'}}>
                 <Typography gutterBottom variant="h5" component="div">
                     Регистрация
@@ -106,41 +107,32 @@ export const RegistrationForm = ({showLogin}: { showLogin: VoidFn }) => {
                         label="Номер телефона"
                         value={credentials.phoneNumber}
                         onChange={onChangePhone}
+                        slotProps={{
+                            input: {
+                                inputComponent: TextMaskCustom as any
+                                // inputProps: {
+                                //     component: SomeThirdPartyComponent,
+                                // },
+                            },
+                        }}
+                        // inputComponent={TextMaskCustom as any}
                     />
-                    {/*<InputMask*/}
-                    {/*    required*/}
-                    {/*    disabled={isLoading}*/}
-                    {/*    mask="+7(999)999 99 99"*/}
-                    {/*    onChange={onChangePhone}*/}
-                    {/*    value={credentials.phoneNumber}*/}
-                    {/*    maskChar=" "*/}
-                    {/*>*/}
-                    {/*    {() => <FormInput label="Номер телефона"/>}*/}
-                    {/*</InputMask>*/}
-                    {/*<FormInput*/}
-                    {/*    required*/}
-                    {/*    disabled={isLoading}*/}
-                    {/*    error={!formValidState.phoneNumber}*/}
-                    {/*    label="Номер телефона"*/}
-                    {/*    value={credentials.phoneNumber}*/}
-                    {/*    onChange={onChangePhone}*/}
-                    {/*/>*/}
                 </div>
                 <FlexBox style={{marginTop: '2em'}}>
-                    <Button
+                    <SimpleButton
                         style={{width: '100%'}}
                         variant='contained'
                         onClick={doLogin}
                         loading={isLoading}
                         disabled={!formValidState.email || !formValidState.phoneNumber}>
-                        Зарегистрироваться</Button>
+                        Зарегистрироваться</SimpleButton>
                 </FlexBox>
                 <FlexBox style={{marginTop: '1em'}}>
-                    <LowercasedButton
+                    <SimpleButton
                         variant='text'
                         onClick={showLogin}
                     >
-                        Уже есть учётная запись? Войти</LowercasedButton>
+                        Уже есть учётная запись? Войти</SimpleButton>
                 </FlexBox>
             </CardContent>
         </Card>
