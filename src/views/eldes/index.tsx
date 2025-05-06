@@ -1,17 +1,16 @@
 import {useCallback, useEffect, useState} from "react";
-import {AxiosError, AxiosResponse} from 'axios';
+import axios, {AxiosError, AxiosResponse} from 'axios';
 import styled from 'styled-components';
 import {Button, Card, CardContent, CircularProgress, Typography} from "@mui/material";
 import {useSnackbar} from 'notistack';
 import {UserDevices, getDevices, Device, AreaType} from "./services";
 import {GateOpenButton} from "./open-button";
 import {FlexBox} from "components/styled";
+import {IS_DEBUG} from "../../utils/constants";
+import {useSelector} from "react-redux";
+import {getAuth} from "../../store/auth/selectors";
 
 
-// @ts-ignore
-export interface ServerError extends Error, AxiosError, AxiosResponse {
-    error?: string;
-}
 
 
 const StyledCard = styled(Card)`
@@ -33,9 +32,15 @@ const ButtonColors: Record<AreaType, { IN: string, OUT: string }> = {
 
 
 export const EldesController = () => {
+    //так делать некрасиво, но пока лень
+    const {
+        user,
+        isUserLoggedIn,
+        isCheckingToken
+    } = useSelector(getAuth);
     const [data, setData] = useState<UserDevices>({
         userId: '',
-        devices: []
+        zones: []
     });
     let firstUnauthorized = false;
     const [loading, setLoading] = useState(false);
@@ -45,7 +50,7 @@ export const EldesController = () => {
         setLoading(true);
         getDevices(enqueueSnackbar, (isSuccess, loadedMap) => {
             setLoading(false);
-            if (isSuccess && loadedMap?.devices.length) {
+            if (isSuccess && loadedMap?.zones?.length) {
                 setData(loadedMap);
             }
 
@@ -53,8 +58,11 @@ export const EldesController = () => {
     }, []);
 
     useEffect(() => {
-        loadDevices();
-    }, []);
+        if (user.token) {
+            loadDevices();
+        }
+
+    }, [user.token]);
 
 
     // @ts-ignore
@@ -63,34 +71,25 @@ export const EldesController = () => {
         // @ts-ignore
         <FlexBox flex-direction='column'>
             {loading && <CircularProgress/>}
-            {data.devices.map((area) =>
-                <div className='card-container' key={area.name}>
-                    <StyledCard key={area.name}>
+            {data.zones.map((zone) =>
+                <div className='card-container' key={zone.id}>
+                    <StyledCard>
                         <CardContent style={{height: '100%'}}>
                             <Typography variant="h6" component="div" style={{marginBottom: '0.5em'}}>
-                                {area.name}
+                                {zone.name}
                             </Typography>
                             {/*@ts-ignore */}
                             {/*<FlexBox flex-direction='column' height='calc(100% - 32px - 1em)'>*/}
-                            <div className='buttons'>
-                                <GateOpenButton
-                                    loadDevices={loadDevices}
-                                    color={ButtonColors[area.area].IN}
-                                    type='IN'
-                                    userId={data.userId}
-                                    device={area.IN}
-                                />
-
-                                {area.OUT?.id &&
+                            {zone.devices.map((device) => (
+                                <div className='buttons' key={device.id}>
                                     <GateOpenButton
                                         loadDevices={loadDevices}
-                                        color={ButtonColors[area.area].OUT}
-                                        type='OUT'
                                         userId={data.userId}
-                                        device={area.OUT}
+                                        device={device}
                                     />
-                                }
-                            </div>
+                                </div>
+                            ))}
+
                             {/*</FlexBox>*/}
                         </CardContent>
                     </StyledCard>

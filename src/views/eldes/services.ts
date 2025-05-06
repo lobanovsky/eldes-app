@@ -1,30 +1,26 @@
 import axios from "axios";
-import {ServerError} from "./index";
+import {ServerError} from "../../utils/types";
 
 export type AreaType = 'PARKING' | "TERRITORY";
 export type ActionCallbackWithData<T> = (isSuccess: boolean, data?: T | null, serverError?: ServerError  | null) => void;
 export interface Device {
-    id: string;
-    name: string;
-    signalStrength: number;
-    modelName: string;
-    firmware: string;
-    imei: string;
-    phoneNumber: string;
-    status: string;
-    deviceKey: string;
+    "id": string;
+    "name": string;
+    "label": string;
+    "color": string;
+    "phoneNumber":string;
+    "deviceKey": string;
 }
 
-export interface AreaGate {
+export interface Zone {
+    id: number;
     name: string;
-    area: AreaType,
-    IN: Device | null;
-    OUT: Device | null
+    devices: Device[];
 }
 
 export interface UserDevices {
     userId: string;
-    devices: AreaGate[];
+    zones: Zone[];
 }
 
 const findDevice = (devices: Device[], searchName: string)=> {
@@ -33,38 +29,9 @@ const findDevice = (devices: Device[], searchName: string)=> {
 }
 
 export const getDevices = (enqueueSnackbar: any, onFinish: ActionCallbackWithData<UserDevices>) => {
-    axios.get('/api/devices')
-        .then(({data: {userId = '', devices = []} = {}}) => {
-            const result: UserDevices = {
-                userId,
-                devices: []
-            }
-
-            //Паркинг первый, чтобы он был выше в списке - т.к. не часто используется
-            const parkingA = findDevice(devices, 'Паркинг-А');
-            if (parkingA?.id) {
-                const parkingB = findDevice(devices, 'Паркинг-Б');
-                result.devices.push({
-                    name: 'Паркинг',
-                    area: "PARKING",
-                    IN: parkingA,
-                    OUT: parkingB || null
-                });
-            }
-
-            const gateA = findDevice(devices, 'Шлагбаум-А');
-            if (gateA?.id) {
-                const gateB = findDevice(devices, 'Шлагбаум-Б');
-                result.devices.push({
-                    name: 'Двор',
-                    area: "TERRITORY",
-                    IN: gateA,
-                    OUT: gateB || null
-                });
-            }
-
-
-            onFinish(true, result);
+    axios.get('/api/private/devices')
+        .then(({data = {zones: []}}) => {
+            onFinish(true, (data || {zones: []}) as UserDevices);
         })
         .catch((err: ServerError) => {
             const errorMsg  = JSON.stringify(err.message || err.error  || err.response);

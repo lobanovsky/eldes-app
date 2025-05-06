@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import {Button, TextField} from "@mui/material";
 
 export type StyledComponentProps<T> = T & { children?: JSX.Element | JSX.Element[] };
 
@@ -20,3 +21,12 @@ export const FlexBox = styled.div<StyledComponentProps<FlexBoxProps>>`
     width: ${(p: any) => (p?.widthPercent || 0) > 0 ? `${p.widthPercent}%` : 'auto'};
     height: ${(p: any) => p.height || '100%'};
 `;
+
+export const LowercasedButton = styled(Button)`
+    text-transform: none !important;
+`
+
+export const FormInput = styled(TextField)`
+    width: 100%;
+    margin-bottom: 1.5em !important;
+`

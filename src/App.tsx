@@ -1,21 +1,21 @@
-import React from 'react';
-import axios from "axios";
-import {Button, Container, styled} from "@mui/material";
+import React, {useEffect} from 'react';
+import {useDispatch, useSelector} from "react-redux";
+import {Button, CircularProgress, Container, styled} from "@mui/material";
 import {ThemeProvider, createTheme} from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-
 import {SnackbarProvider} from 'notistack';
-import {EldesController} from "./views/eldes";
 
+import {AppHeader} from "components/layout/header";
+import {getAuth} from "store/auth/selectors";
+import {logout} from "store/auth/reducer";
+import {EldesController} from "views/eldes";
+import {onSuccessLoadUser} from "views/auth/login/helpers";
+import {LoginView} from 'views/auth/login';
 import './App.css';
-import {AppHeader} from "./components/layout/header";
+import {IS_DEBUG} from "./utils/constants";
+import axios from "axios";
+import {Loading} from "./components/loading";
 
-
-axios.defaults.baseURL = process.env.REACT_APP_BACKEND_URL;
-// axios.defaults.proxy = {
-//     host: '109.173.116.61',
-//     port: 8070
-// }
 const theme = createTheme({
     colorSchemes: {
         // dark: true,
@@ -29,16 +29,46 @@ const StyledContainer = styled(Container)`
     padding: 1em 1em`
 
 function App() {
+    const dispatch = useDispatch();
+    const auth = useSelector(getAuth);
+    const {
+        user,
+        isUserLoggedIn,
+        isCheckingToken
+    } = auth;
+
+    useEffect(() => {
+        if (isUserLoggedIn) {
+            // todo нет реста для получения данных пользователя (проверки токена), поэтому сразу саксесс
+            onSuccessLoadUser(user);
+        } else {
+            dispatch(logout());
+        }
+
+    }, []);
+
     return (
         <ThemeProvider theme={theme}>
             <SnackbarProvider>
                 <CssBaseline/>
-                <div className="App" style={{backgroundImage: 'url(\'/background.jpg\')', backgroundColor: 'rgba(255, 255, 255, 0.5)'}}>
+                <div className="App"
+                     style={{backgroundImage: 'url(\'/background.jpg\')', backgroundColor: 'rgba(255, 255, 255, 0.5)'}}>
                     <AppHeader/>
+                    {IS_DEBUG && !!user.user.id && <Button onClick={() => {
+                        axios.delete(`api/private/users/${user.user.id}`)
+                            .then(r => {
+                                dispatch(logout());
+                            })
+                            .catch(e => {
+                                console.error(e);
+                            })
+                    }} variant="contained" color="primary">Удалить себя</Button>}
                     <StyledContainer className="app-content" style={{paddingBottom: '2em'}}>
-                        <EldesController/>
-                    </StyledContainer>
+                        {isCheckingToken && <Loading/>}
+                        {/*@ts-ignore*/}
+                        {isUserLoggedIn && user?.token && !isCheckingToken ? <EldesController/> : <LoginView/>}
 
+                    </StyledContainer>
                 </div>
             </SnackbarProvider>
         </ThemeProvider>
