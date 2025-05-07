@@ -1,14 +1,13 @@
 import {useCallback, useEffect, useState} from "react";
-import axios, {AxiosError, AxiosResponse} from 'axios';
 import styled from 'styled-components';
-import {Button, Card, CardContent, CircularProgress, Typography} from "@mui/material";
+import { Card, CardContent, Typography} from "@mui/material";
 import {useSnackbar} from 'notistack';
 import {UserDevices, getDevices, Device, AreaType} from "./services";
 import {GateOpenButton} from "./open-button";
 import {FlexBox} from "components/styled";
-import {IS_DEBUG} from "../../utils/constants";
 import {useSelector} from "react-redux";
 import {getAuth} from "../../store/auth/selectors";
+import {Loading} from "../../components/loading";
 
 
 const ZoneCard = styled(Card)`
@@ -57,8 +56,8 @@ export const EldesController = () => {
     return (
         // <div>
         // @ts-ignore
-        <FlexBox flex-direction='column' className='eldes view' style={{minHeight: '100%', paddingBottom: '1em'}}>
-            {loading && <CircularProgress/>}
+        <FlexBox flex-direction='column' className='eldes view' style={{minHeight: 'calc(100% - 110px)', paddingBottom: '1em'}}>
+            {loading && <Loading text='Загружаем шлагбаумы'/>}
             {data.zones.map((zone) =>
                 <ZoneCard variant='outlined' key={zone.id}>
                     <CardContent>

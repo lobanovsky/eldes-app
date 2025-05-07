@@ -1,4 +1,4 @@
-import {CircularProgress} from "@mui/material";
+import {CircularProgress, Typography} from "@mui/material";
 import styled from "styled-components";
 
 const LoadingMask = styled.div`
@@ -14,7 +14,14 @@ const LoadingMask = styled.div`
     background-color: rgba(255, 255, 255, 0.4);
 `
 
-export const Loading = () =>
+export const Loading = ({text = ''}: { text?: string }) =>
     <LoadingMask>
-        <CircularProgress color="primary"/>
+        <div>
+            <div>
+                <CircularProgress color="primary"/>
+            </div>
+            {!!text && <Typography variant='subtitle1' style={{marginLeft: '0.5em'}} component='div'>{text}</Typography>}
+        </div>
+
+
     </LoadingMask>

@@ -17,24 +17,28 @@ export const AuthDebugButtons = () => {
 
     const dispatch = useDispatch();
 
-    return user.user.id > 0 && !isCheckingToken && isUserLoggedIn  ?  <div style={{ width: 42, textAlign: 'end', position: 'relative'}}>
-        {user.user.email === 'ifsogirl91@gmail.com' &&
-            <IconButton aria-label="Выйти" style={{position: 'absolute', top: 48, right: 4}} onClick={() => {
-                axios.delete(`api/private/users/${user.user.id}`)
-                    .then(r => {
-                        dispatch(logout());
-                    })
-                    .catch(e => {
-                        console.error(e);
-                    })
+    return <div style={{width: 42, textAlign: 'end', position: 'relative'}}>
+        {user.user.id > 0 && !isCheckingToken && isUserLoggedIn ? <>
+            {user.user.email === 'ifsogirl91@gmail.com' &&
+                <IconButton aria-label="Выйти" style={{position: 'absolute', top: 48, right: 4}} onClick={() => {
+                    axios.delete(`api/private/users/${user.user.id}`)
+                        .then(r => {
+                            dispatch(logout());
+                        })
+                        .catch(e => {
+                            console.error(e);
+                        })
+                }}>
+                    <DeleteIcon/>
+                </IconButton>
+            }
+            <IconButton aria-label="Выйти" onClick={() => {
+                dispatch(logout());
             }}>
-                <DeleteIcon/>
+                <LogoutIcon/>
             </IconButton>
-        }
-        <IconButton aria-label="Выйти" onClick={() => {
-            dispatch(logout());
-        }}>
-            <LogoutIcon/>
-        </IconButton>
-    </div> : <></>
+        </> : <></>}
+    </div>
+
+
 }
