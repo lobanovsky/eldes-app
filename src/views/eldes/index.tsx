@@ -8,6 +8,7 @@ import {FlexBox} from "components/styled";
 import {useSelector} from "react-redux";
 import {getAuth} from "../../store/auth/selectors";
 import {Loading} from "../../components/loading";
+import {useNotifications} from "../../hooks";
 
 
 const ZoneCard = styled(Card)`
@@ -20,22 +21,18 @@ const ZoneCard = styled(Card)`
 
 export const EldesController = () => {
     //так делать некрасиво, но пока лень
-    const {
-        user,
-        isUserLoggedIn,
-        isCheckingToken
-    } = useSelector(getAuth);
+    const {user} = useSelector(getAuth);
+    const notificationsApi = useNotifications();
     const [data, setData] = useState<UserDevices>({
         userId: '',
         zones: []
     });
-    let firstUnauthorized = false;
+
     const [loading, setLoading] = useState(false);
-    const {enqueueSnackbar} = useSnackbar();
 
     const loadDevices = useCallback(() => {
         setLoading(true);
-        getDevices(enqueueSnackbar, (isSuccess, loadedMap) => {
+        getDevices(notificationsApi, (isSuccess, loadedMap) => {
             setLoading(false);
             if (isSuccess && loadedMap?.zones?.length) {
                 setData(loadedMap);

@@ -5,19 +5,19 @@ import axios, {AxiosResponse} from "axios";
 import {useSnackbar} from "notistack";
 
 import {FlexBox, FormInput, SimpleButton} from "components/styled";
-import {useLoading} from "hooks/use-loading";
-import {EMPTY_USER, EMPTY_USER_DATA, loginPasswordGenerated, loginStarted} from "store/auth/reducer";
+import {useNotifications,useLoading} from "hooks";
+import { EMPTY_USER_DATA, loginPasswordGenerated} from "store/auth/reducer";
 import {EmailRegex} from "utils/constants";
 import {UserInfo, VoidFn} from "utils/types";
 import {TextMaskCustom} from "../components/MaskedInput";
-import {getErrorMessage} from "../../../../../utils/notifications";
+
 
 
 const PhoneRegex = /^\+7\(\d{3}\)(\s?)\d{3}(\s?)\d{2}(\s?)\d{2}$/;
 
 export const RegistrationForm = ({showLogin}: { showLogin: VoidFn }) => {
     const dispatch = useDispatch();
-    const {enqueueSnackbar} = useSnackbar();
+    const { showError, showMessage} = useNotifications();
     const [isLoading, showLoading, hideLoading] = useLoading();
 
     const [credentials, setCredentials] = useState<{ email: string, phoneNumber: string }>({
@@ -49,14 +49,14 @@ export const RegistrationForm = ({showLogin}: { showLogin: VoidFn }) => {
                 if (password) {
                     msg = `Вы успешно зарегистрировались. Ваш пароль: ${password}. Также мы прислали его на вашу почту.`
                 }
-                enqueueSnackbar(msg, {variant: 'success', autoHideDuration: password ? 10000 : 3000});
+                showMessage(msg, { autoHideDuration: password ? 10000 : 3000});
                 hideLoading();
                 dispatch(loginPasswordGenerated({password, email: user.email}));
                 showLogin();
             })
             .catch((err) => {
                 hideLoading();
-                enqueueSnackbar(getErrorMessage('Не удалось зарегистрироваться', err), {variant: 'error'})
+                showError('Не удалось зарегистрироваться', err);
             })
     }, [credentials.email, credentials.phoneNumber]);
 

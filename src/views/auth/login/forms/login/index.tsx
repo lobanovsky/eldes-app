@@ -5,14 +5,13 @@ import axios from "axios";
 import {useSnackbar} from "notistack";
 
 import {FlexBox, FormInput, SimpleButton} from "components/styled";
-import {useLoading} from "hooks/use-loading";
+import {useLoading,useNotifications} from "hooks";
 import {loginError, loginStarted} from "store/auth/reducer";
 import {EmailRegex} from "utils/constants";
 import {VoidFn} from "utils/types";
 import {getAuth} from "store/auth/selectors";
 import {onSuccessLoadUser} from "../../helpers";
 import {PasswordInput} from "../components/PasswordInput";
-import {getErrorMessage} from "../../../../../utils/notifications";
 
 
 export const LoginForm = ({showRegistration, showResetPassword, savedPassword = ''}: {
@@ -23,7 +22,7 @@ export const LoginForm = ({showRegistration, showResetPassword, savedPassword = 
     const authState = useSelector(getAuth);
     const dispatch = useDispatch();
 
-    const {enqueueSnackbar} = useSnackbar();
+    const { showError} = useNotifications();
     const [loading, showLoading, hideLoading] = useLoading();
     const [credentials, setCredentials] = useState<{ email: string, password: string }>(() => {
         return ({
@@ -51,7 +50,7 @@ export const LoginForm = ({showRegistration, showResetPassword, savedPassword = 
             })
             .catch((err) => {
                 hideLoading();
-                enqueueSnackbar(getErrorMessage('Не удалось авторизоваться', err), {variant: 'error'})
+                showError('Не удалось авторизоваться', err);
                 dispatch(loginError());
             })
     }, [credentials.email, credentials.password]);
@@ -110,7 +109,7 @@ export const LoginForm = ({showRegistration, showResetPassword, savedPassword = 
                         disabled={!formValidState.email || !formValidState.password}>
                         ВОЙТИ</SimpleButton>
                 </FlexBox>
-                <FlexBox flex-direction={'row'} style={{marginTop: '1em'}} justifyContent='space-between'>
+                <FlexBox flex-direction={'row'} style={{marginTop: '1em'}} justify-content='space-between'>
                     <SimpleButton
                         variant='text'
                         onClick={showResetPassword}

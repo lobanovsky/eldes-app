@@ -62,7 +62,7 @@ function App() {
 
     return (
         <ThemeProvider theme={theme}>
-            <SnackbarProvider autoHideDuration={3000}>
+            <SnackbarProvider autoHideDuration={3000} maxSnack={5}>
                 <CssBaseline/>
                 <div className="App" style={{backgroundColor: '#F6F0F0'}}>
                     {isCheckingToken && <Loading/>}

@@ -3,6 +3,7 @@ import {useCallback, useState} from "react";
 import axios from "axios";
 import {useSnackbar} from "notistack";
 import {Button, styled, SvgIcon} from "@mui/material";
+import {useNotifications} from "../../../hooks";
 
 interface GateOpenProps {
     device: Device | null;
@@ -26,7 +27,7 @@ const StyledButton = styled(Button)<{ color: string }>`
 
 export const GateOpenButton = ({userId, device, loadDevices}: GateOpenProps) => {
     const [loading, setLoading] = useState(false);
-    const {enqueueSnackbar} = useSnackbar();
+    const {showError, showMessage} = useNotifications()
 
     const openEldes = useCallback(() => {
         if (!device?.deviceKey) {
@@ -34,13 +35,13 @@ export const GateOpenButton = ({userId, device, loadDevices}: GateOpenProps) => 
         }
         setLoading(true);
         axios.post(`api/private/devices/${device.id}/open`, {key: device.deviceKey, userid: userId})
-            .then(resp => {
+            .then(() => {
+                showMessage('Шлагбаум открыт!', {autoHideDuration: 2000});
                 setLoading(false);
             })
             .catch(err => {
-                const errorMsg = JSON.stringify(err.response?.data || err.message || err.error);
                 setLoading(false);
-                enqueueSnackbar(errorMsg, {variant: 'error'});
+                showError('Не удалось открыть шлагбаум', err);
             })
     }, [userId, device?.deviceKey]);
 

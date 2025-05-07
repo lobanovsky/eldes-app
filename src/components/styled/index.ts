@@ -8,7 +8,7 @@ interface FlexBoxProps {
     height?: string;
     inline?: boolean,
     'flex-direction'?: 'column' | 'row' | 'row-reverse' | 'column-reverse',
-    justifyContent?: string;
+    'justify-content'?: string;
     widthPercent?: number
 }
 
@@ -17,7 +17,7 @@ export const FlexBox = styled.div<StyledComponentProps<FlexBoxProps>>`
     gap: ${(p: any) => `${p.gap || '1em'}`};
     align-items: center;
     flex-direction: ${(p: any) => p['flex-direction'] || 'column'};
-    justify-content:  ${(p: any) => p.justifyContent || 'flex-end'};
+    justify-content:  ${(p: any) => p['justify-content'] || 'flex-end'};
     width: ${(p: any) => (p?.widthPercent || 0) > 0 ? `${p.widthPercent}%` : 'auto'};
     height: ${(p: any) => p.height || 'auto'};
 `;

@@ -1,44 +1,37 @@
-import React, {ChangeEvent, forwardRef, KeyboardEvent, useCallback, useMemo, useState} from "react";
-import {useDispatch} from "react-redux";
-import {Button, Card, CardContent, TextFieldProps, Typography} from "@mui/material";
+import React, {ChangeEvent, useCallback, useMemo, useState} from "react";
+import { Card, CardContent, Typography} from "@mui/material";
 import axios, {AxiosResponse} from "axios";
-import {useSnackbar} from "notistack";
 
 import {FlexBox, FormInput, SimpleButton} from "components/styled";
-import {useLoading} from "hooks/use-loading";
-import { EMPTY_USER_DATA} from "store/auth/reducer";
+import {useLoading, useNotifications} from "hooks";
+import {EMPTY_USER_DATA} from "store/auth/reducer";
 import {EmailRegex} from "utils/constants";
 import {UserInfo, VoidFn} from "utils/types";
-import {getErrorMessage} from "../../../../../utils/notifications";
 
 
 export const ResetPasswordForm = ({showLogin}: { showLogin: VoidFn }) => {
-    const {enqueueSnackbar} = useSnackbar();
+    const {showError, showMessage} = useNotifications();
     const [isLoading, showLoading, hideLoading] = useLoading();
 
     const [email, setEmail] = useState('');
 
-    const isFormValid = useMemo(() =>EmailRegex.test(email || ''), [email]);
+    const isFormValid = useMemo(() => EmailRegex.test(email || ''), [email]);
 
     const restorePassword = useCallback(() => {
         showLoading();
-        axios.post('/api/auth/recover-password', {
-            email
-        })
+
+        axios.post('/api/auth/recover-password', {email})
             // @ts-ignore
             .then(({
-                       data: {message = '', password = '', user} = {
-                           message: '', password: '', user: EMPTY_USER_DATA
-                       }
+                       data: {message = ''} = {message: '', password: '', user: EMPTY_USER_DATA}
                    }: AxiosResponse<{ message: string, password: string, user: UserInfo }> = {}) => {
-                let msg = message || `Пароль отправлен на "${email}"`;
-                enqueueSnackbar(msg, {variant: 'success'});
+                showMessage(message || `Пароль отправлен на "${email}"`)
                 hideLoading();
                 showLogin();
             })
             .catch((err) => {
                 hideLoading();
-                enqueueSnackbar(getErrorMessage('Не удалось зарегистрироваться', err), {variant: 'error'})
+                showError('Не удалось зарегистрироваться', err);
             })
     }, [email]);
 
@@ -77,7 +70,7 @@ export const ResetPasswordForm = ({showLogin}: { showLogin: VoidFn }) => {
                         variant='text'
                         onClick={showLogin}
                     >
-                       Вернуться к форме входа</SimpleButton>
+                        Вернуться к форме входа</SimpleButton>
                 </FlexBox>
             </CardContent>
         </Card>
