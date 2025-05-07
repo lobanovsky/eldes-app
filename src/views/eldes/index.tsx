@@ -11,25 +11,13 @@ import {useSelector} from "react-redux";
 import {getAuth} from "../../store/auth/selectors";
 
 
-
-
-const StyledCard = styled(Card)`
+const ZoneCard = styled(Card)`
     min-width: 300px;
+    max-width: 420px;
     width: 100%;
+    background-color: rgba(255, 255, 255, 0.5) !important;
     //height: 100%;
 `
-
-const ButtonColors: Record<AreaType, { IN: string, OUT: string }> = {
-    PARKING: {
-        IN: '#88DBF2',
-        OUT: '#BDDDFC'
-    },
-    TERRITORY: {
-        IN: '#D4DE95',
-        OUT: '#BAC095'
-    }
-}
-
 
 export const EldesController = () => {
     //так делать некрасиво, но пока лень
@@ -69,31 +57,24 @@ export const EldesController = () => {
     return (
         // <div>
         // @ts-ignore
-        <FlexBox flex-direction='column'>
+        <FlexBox flex-direction='column' className='eldes view' style={{minHeight: '100%', paddingBottom: '1em'}}>
             {loading && <CircularProgress/>}
             {data.zones.map((zone) =>
-                <div className='card-container' key={zone.id}>
-                    <StyledCard>
-                        <CardContent style={{height: '100%'}}>
-                            <Typography variant="h6" component="div" style={{marginBottom: '0.5em'}}>
-                                {zone.name}
-                            </Typography>
-                            {/*@ts-ignore */}
-                            {/*<FlexBox flex-direction='column' height='calc(100% - 32px - 1em)'>*/}
-                            {zone.devices.map((device) => (
-                                <div className='buttons' key={device.id}>
-                                    <GateOpenButton
-                                        loadDevices={loadDevices}
-                                        userId={data.userId}
-                                        device={device}
-                                    />
-                                </div>
-                            ))}
-
-                            {/*</FlexBox>*/}
-                        </CardContent>
-                    </StyledCard>
-                </div>
+                <ZoneCard variant='outlined' key={zone.id}>
+                    <CardContent>
+                        <Typography variant="h6" component="div" style={{marginBottom: '0.5em'}}>
+                            {zone.name}
+                        </Typography>
+                        {zone.devices.map((device) => (
+                            <GateOpenButton
+                                key={device.id}
+                                loadDevices={loadDevices}
+                                userId={data.userId}
+                                device={device}
+                            />
+                        ))}
+                    </CardContent>
+                </ZoneCard>
             )}
         </FlexBox>
     )

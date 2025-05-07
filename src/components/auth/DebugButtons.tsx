@@ -6,6 +6,7 @@ import {logout} from "../../store/auth/reducer";
 import {Button, IconButton} from "@mui/material";
 import React from "react";
 import LogoutIcon from '@mui/icons-material/Logout';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export const AuthDebugButtons = () => {
     const {
@@ -16,12 +17,9 @@ export const AuthDebugButtons = () => {
 
     const dispatch = useDispatch();
 
-    return user.user.id > 0 && !isCheckingToken && isUserLoggedIn  ?  <div style={{position: 'absolute', top: '0.5em', right: '0.5em', width: 200, textAlign: 'end'}}>
-        {user.user.email === 'ifsogirl91@gmail.com' && <Button
-            variant="contained"
-            size='small'
-            color="primary"
-            onClick={() => {
+    return user.user.id > 0 && !isCheckingToken && isUserLoggedIn  ?  <div style={{ width: 42, textAlign: 'end', position: 'relative'}}>
+        {user.user.email === 'ifsogirl91@gmail.com' &&
+            <IconButton aria-label="Выйти" style={{position: 'absolute', top: 48, right: 4}} onClick={() => {
                 axios.delete(`api/private/users/${user.user.id}`)
                     .then(r => {
                         dispatch(logout());
@@ -30,8 +28,9 @@ export const AuthDebugButtons = () => {
                         console.error(e);
                     })
             }}>
-            Удалить себя
-        </Button>}
+                <DeleteIcon/>
+            </IconButton>
+        }
         <IconButton aria-label="Выйти" onClick={() => {
             dispatch(logout());
         }}>

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import {Button, TextField} from "@mui/material";
+import {Button, Container as MuiContainer, TextField} from "@mui/material";
 
 export type StyledComponentProps<T> = T & { children?: JSX.Element | JSX.Element[] };
 
@@ -29,4 +29,8 @@ export const SimpleButton = styled(Button)`
 export const FormInput = styled(TextField)`
     width: 100%;
     margin-bottom: 1.5em !important;
+`
+
+export const Container = styled(MuiContainer)<{padding?: string}>`
+    padding: ${(p: any) => p.padding || '1em'};
 `

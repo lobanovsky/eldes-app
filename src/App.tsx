@@ -1,20 +1,21 @@
 import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {Button, CircularProgress, Container, styled} from "@mui/material";
+import {styled} from "@mui/material";
 import {ThemeProvider, createTheme} from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import {SnackbarProvider} from 'notistack';
 
+import {AppHeader, AppFooter} from "components/layout";
+import {Loading} from "components/loading";
+import {Container, FlexBox} from "components/styled";
 import {getAuth} from "store/auth/selectors";
 import {logout} from "store/auth/reducer";
 import {EldesController} from "views/eldes";
 import {onSuccessLoadUser} from "views/auth/login/helpers";
 import {LoginView} from 'views/auth/login';
 import './App.css';
-import {IS_DEBUG} from "./utils/constants";
-import axios from "axios";
-import {Loading} from "./components/loading";
-import {AuthDebugButtons} from "./components/auth/DebugButtons";
+import {IS_DEBUG} from "utils/constants";
+
 
 const theme = createTheme({
     colorSchemes: {
@@ -25,9 +26,19 @@ const theme = createTheme({
     },
 });
 
-const StyledContainer = styled(Container)`
-    padding: 1em 1em;
-    height: 100%;
+const ViewContainer = styled(Container)`
+    flex: 1 0 auto;
+    //72px  высота хедера
+    // 56px высота футера
+    max-height: calc(100vh - 72px);
+    overflow-y: auto;
+`
+
+const Layout = styled(FlexBox)`
+    height: 100vh;
+    justify-content: flex-start;
+    gap: 0;
+    flex-direction: column;
 `
 
 function App() {
@@ -53,14 +64,16 @@ function App() {
         <ThemeProvider theme={theme}>
             <SnackbarProvider autoHideDuration={3000}>
                 <CssBaseline/>
-                <div className="App" style={{backgroundColor: '#F6F0F0', position: 'relative'}}>
-                    {/*<AppHeader/>*/}
-                    <AuthDebugButtons/>
-                    <StyledContainer className="app-content" style={{paddingBottom: '2em'}}>
-                        {isCheckingToken && <Loading/>}
-                        {/*@ts-ignore*/}
-                        {isUserLoggedIn && user?.token && !isCheckingToken ? <EldesController/> : <LoginView/>}
-                    </StyledContainer>
+                <div className="App" style={{backgroundColor: '#F6F0F0'}}>
+                    {isCheckingToken && <Loading/>}
+                    <Layout style={IS_DEBUG ? {background: '#f48ca7'} : {}}>
+                        <AppHeader/>
+                        <ViewContainer className="app-content">
+                            {isUserLoggedIn && user?.token && !isCheckingToken ? <EldesController/> : <LoginView/>}
+                        </ViewContainer>
+                        {/*<AppFooter/>*/}
+                    </Layout>
+
                 </div>
             </SnackbarProvider>
         </ThemeProvider>

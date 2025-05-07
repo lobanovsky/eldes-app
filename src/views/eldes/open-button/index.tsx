@@ -11,17 +11,17 @@ interface GateOpenProps {
 }
 
 const StyledButton = styled(Button)<{ color: string }>`
-    margin: 1em 0;
+
     width: 100%;
-    height: 80px;
+    height: 72px;
     color: rgb(8, 14, 12);
     font-size: 24px;
     text-transform: none !important;
     background-color: ${(p: any) => p.color || 'gray'};
-    //
-    //flex: 1 0 auto;
-    //width: 100%;
-    //max-height: 80px;
+
+    &:not(:last-child) {
+        margin-bottom: 1em;
+    }
 `
 
 export const GateOpenButton = ({userId, device, loadDevices}: GateOpenProps) => {
@@ -38,14 +38,9 @@ export const GateOpenButton = ({userId, device, loadDevices}: GateOpenProps) => 
                 setLoading(false);
             })
             .catch(err => {
-                const errorMsg = JSON.stringify(err.response?.data ||  err.message || err.error);
+                const errorMsg = JSON.stringify(err.response?.data || err.message || err.error);
                 setLoading(false);
-                // if (err.status === 401) {
-                //     loadDevices();
-                // }
-                // else {
-                    enqueueSnackbar(errorMsg, {variant: 'error'});
-                // }
+                enqueueSnackbar(errorMsg, {variant: 'error'});
             })
     }, [userId, device?.deviceKey]);
 
