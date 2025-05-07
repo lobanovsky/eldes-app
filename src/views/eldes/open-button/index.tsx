@@ -36,7 +36,7 @@ export const GateOpenButton = ({userId, device, loadDevices}: GateOpenProps) => 
         setLoading(true);
         axios.post(`api/private/devices/${device.id}/open`, {key: device.deviceKey, userid: userId})
             .then(() => {
-                showMessage('Шлагбаум открыт!', {autoHideDuration: 2000});
+                // showMessage('Шлагбаум открыт!', {autoHideDuration: 2000});
                 setLoading(false);
             })
             .catch(err => {
