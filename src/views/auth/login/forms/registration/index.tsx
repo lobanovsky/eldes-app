@@ -110,12 +110,8 @@ export const RegistrationForm = ({showLogin}: { showLogin: VoidFn }) => {
                         slotProps={{
                             input: {
                                 inputComponent: TextMaskCustom as any
-                                // inputProps: {
-                                //     component: SomeThirdPartyComponent,
-                                // },
                             },
                         }}
-                        // inputComponent={TextMaskCustom as any}
                     />
                 </div>
                 <FlexBox style={{marginTop: '2em'}}>
@@ -125,7 +121,7 @@ export const RegistrationForm = ({showLogin}: { showLogin: VoidFn }) => {
                         onClick={doLogin}
                         loading={isLoading}
                         disabled={!formValidState.email || !formValidState.phoneNumber}>
-                        Зарегистрироваться</SimpleButton>
+                        ЗАРЕГИСТРИРОВАТЬСЯ</SimpleButton>
                 </FlexBox>
                 <FlexBox style={{marginTop: '1em'}}>
                     <SimpleButton

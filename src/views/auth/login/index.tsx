@@ -3,7 +3,7 @@ import React, { useCallback, useState} from 'react';
 import {FlexBox} from "components/styled";
 import {RegistrationForm} from './forms/registration';
 import {LoginForm} from "./forms/login";
-import {IS_DEBUG} from "../../../utils/constants";
+import {ResetPasswordForm} from "./forms/reset-password";
 
 type LoginFormType = 'LOGIN' | "REGISTER" | 'RESET_PASSWORD';
 
@@ -30,6 +30,7 @@ export function LoginView() {
                 {formType === 'LOGIN' &&
                     <LoginForm  showRegistration={showRegistration} showResetPassword={showResetPassword}/>}
                 {formType === 'REGISTER' && <RegistrationForm showLogin={showLogin}/>}
+                {formType === 'RESET_PASSWORD' && <ResetPasswordForm showLogin={showLogin}/>}
             </FlexBox>
         </div>
     );

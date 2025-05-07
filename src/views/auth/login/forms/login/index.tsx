@@ -108,20 +108,18 @@ export const LoginForm = ({showRegistration, showResetPassword, savedPassword = 
                         variant='contained'
                         onClick={doLogin}
                         disabled={!formValidState.email || !formValidState.password}>
-                        Войти</SimpleButton>
+                        ВОЙТИ</SimpleButton>
                 </FlexBox>
                 <FlexBox flex-direction={'row'} style={{marginTop: '1em'}} justifyContent='space-between'>
                     <SimpleButton
                         variant='text'
-                        // onClick={doLogin}
-                        // disabled={!formValidState.email || !formValidState.password}>
-                    >
+                        onClick={showResetPassword}
+                        disabled={loading}>
                         Забыли пароль?</SimpleButton>
                     <SimpleButton
                         variant='text'
                         onClick={showRegistration}
-                        // disabled={!formValidState.email || !formValidState.password}>
-                    >
+                        disabled={loading}>
                         Регистрация</SimpleButton>
                 </FlexBox>
             </CardContent>
