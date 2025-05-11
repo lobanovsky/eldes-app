@@ -12,7 +12,6 @@ export const AppHeader = () => {
                 Сделано в
                 <a href="https://lobanovsky.ru" target="_blank"
                    style={{textTransform: 'none', margin: '0 4px', color: '#1976d2', textDecoration: 'none'}}>Бюро Лобановского</a>
-                <span style={{color: 'red'}}>❤️</span>
             </div>
             <AuthDebugButtons/>
         </FlexBox>
