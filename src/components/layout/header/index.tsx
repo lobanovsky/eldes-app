@@ -2,9 +2,7 @@
 import React from "react";
 import {Container, FlexBox} from "../../styled";
 import {AuthDebugButtons} from "../../auth/DebugButtons";
-import {IS_DEBUG} from "../../../utils/constants";
 
-//todo height calculate flex
 export const AppHeader = () => {
     return <Container className="header" style={{textAlign: 'end'}}>
         <FlexBox flex-direction='row'>

@@ -14,6 +14,11 @@ export interface LoginData {
     user: UserInfo
 }
 
+export interface Credentials {
+    email: string;
+    password: string;
+}
+
 // @ts-ignore
 export interface ServerError extends Error, AxiosError, AxiosResponse {
     error?: string;

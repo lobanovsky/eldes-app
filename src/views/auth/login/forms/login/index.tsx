@@ -1,17 +1,14 @@
 import React, {ChangeEvent, KeyboardEvent, useCallback, useMemo, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {Button, Card, CardContent, Typography} from "@mui/material";
-import axios from "axios";
-import {useSnackbar} from "notistack";
+import { Card, CardContent, Typography} from "@mui/material";
 
 import {FlexBox, FormInput, SimpleButton} from "components/styled";
-import {useLoading,useNotifications} from "hooks";
-import {loginError, loginStarted} from "store/auth/reducer";
+import {useNotifications} from "hooks";
+import {getAuth} from "store/auth/selectors";
 import {EmailRegex} from "utils/constants";
 import {VoidFn} from "utils/types";
-import {getAuth} from "store/auth/selectors";
-import {onSuccessLoadUser} from "../../helpers";
 import {PasswordInput} from "../components/PasswordInput";
+import {performLogin} from "../../services";
 
 
 export const LoginForm = ({showRegistration, showResetPassword, savedPassword = ''}: {
@@ -19,15 +16,14 @@ export const LoginForm = ({showRegistration, showResetPassword, savedPassword = 
     showResetPassword: VoidFn,
     savedPassword?: string
 }) => {
-    const authState = useSelector(getAuth);
+    const {user: {loginEmail = '', loginPassword = ''}, isLoggingIn} = useSelector(getAuth);
     const dispatch = useDispatch();
 
     const { showError} = useNotifications();
-    const [loading, showLoading, hideLoading] = useLoading();
     const [credentials, setCredentials] = useState<{ email: string, password: string }>(() => {
         return ({
-            email: authState.user.loginEmail || '',
-            password: authState.user.loginPassword || ''
+            email: loginEmail,
+            password: loginPassword
         });
     });
 
@@ -37,22 +33,7 @@ export const LoginForm = ({showRegistration, showResetPassword, savedPassword = 
     }), [credentials.email, credentials.password]);
 
     const doLogin = useCallback(() => {
-        dispatch(loginStarted());
-        showLoading();
-        axios.post('/api/auth/login', {
-            email: credentials.email,
-            password: credentials.password,
-        })
-            // @ts-ignore
-            .then(({data = {}} = {}) => {
-                onSuccessLoadUser(data);
-                hideLoading();
-            })
-            .catch((err) => {
-                hideLoading();
-                showError('Не удалось авторизоваться', err);
-                dispatch(loginError());
-            })
+        performLogin(credentials, dispatch, showError);
     }, [credentials.email, credentials.password]);
 
     const onChangeEmail = useCallback(({target: {value}}: ChangeEvent<HTMLInputElement>) => {
@@ -113,12 +94,12 @@ export const LoginForm = ({showRegistration, showResetPassword, savedPassword = 
                     <SimpleButton
                         variant='text'
                         onClick={showResetPassword}
-                        disabled={loading}>
+                        disabled={isLoggingIn}>
                         Забыли пароль?</SimpleButton>
                     <SimpleButton
                         variant='text'
                         onClick={showRegistration}
-                        disabled={loading}>
+                        disabled={isLoggingIn}>
                         Регистрация</SimpleButton>
                 </FlexBox>
             </CardContent>

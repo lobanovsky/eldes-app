@@ -12,8 +12,8 @@ export const getErrorMessage = (defaultMsg: string, axiosError?: ServerError) =>
     </div>
 }
 
-type SuccessNotificationFn = (msg: string | React.ReactNode, options?: SharedProps<'success'>) => void;
-type ErrorNotificationFn = (msg: string, serverError?: ServerError | null, options?: SharedProps<'error'>) => void;
+export type SuccessNotificationFn = (msg: string | React.ReactNode, options?: SharedProps<'success'>) => void;
+export type ErrorNotificationFn = (msg: string, serverError?: ServerError | null, options?: SharedProps<'error'>) => void;
 
 export interface NotificationsHookResult {
     showMessage: SuccessNotificationFn;

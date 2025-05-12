@@ -1,15 +1,17 @@
-import React, {ChangeEvent, forwardRef, KeyboardEvent, useCallback, useMemo, useState} from "react";
-import {useDispatch} from "react-redux";
-import {Button, Card, CardContent, TextFieldProps, Typography} from "@mui/material";
+import React, {ChangeEvent, KeyboardEvent, useCallback, useMemo, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {Card, CardContent, Typography} from "@mui/material";
 import axios, {AxiosResponse} from "axios";
-import {useSnackbar} from "notistack";
 
 import {FlexBox, FormInput, SimpleButton} from "components/styled";
 import {useNotifications,useLoading} from "hooks";
 import { EMPTY_USER_DATA, loginPasswordGenerated} from "store/auth/reducer";
+import { getIsLoggingIn} from "store/auth/selectors";
+
 import {EmailRegex} from "utils/constants";
 import {UserInfo, VoidFn} from "utils/types";
 import {TextMaskCustom} from "../components/MaskedInput";
+import {performLogin} from "../../services";
 
 
 
@@ -19,6 +21,7 @@ export const RegistrationForm = ({showLogin}: { showLogin: VoidFn }) => {
     const dispatch = useDispatch();
     const { showError, showMessage} = useNotifications();
     const [isLoading, showLoading, hideLoading] = useLoading();
+    const isLoggingIn = useSelector(getIsLoggingIn);
 
     const [credentials, setCredentials] = useState<{ email: string, phoneNumber: string }>({
         email: '',
@@ -33,7 +36,7 @@ export const RegistrationForm = ({showLogin}: { showLogin: VoidFn }) => {
     }, [credentials.email, credentials.phoneNumber]);
 
 
-    const doLogin = useCallback(() => {
+    const doRegister = useCallback(() => {
         showLoading();
         axios.post('/api/auth/register', {
             email: credentials.email,
@@ -45,14 +48,24 @@ export const RegistrationForm = ({showLogin}: { showLogin: VoidFn }) => {
                            message: '', password: '', user: EMPTY_USER_DATA
                        }
                    }: AxiosResponse<{ message: string, password: string, user: UserInfo }> = {}) => {
+              //после успешной регистрации сразу логинимся
                 let msg = message || 'Вы успешно зарегистрировались!';
                 if (password) {
                     msg = `Вы успешно зарегистрировались. Ваш пароль: ${password}. Также мы прислали его на вашу почту.`
                 }
                 showMessage(msg, { autoHideDuration: password ? 10000 : 3000});
-                hideLoading();
+                // hideLoading();
                 dispatch(loginPasswordGenerated({password, email: user.email}));
-                showLogin();
+                performLogin({
+                    email: credentials.email,
+                    password
+                }, dispatch, showError, (isSuccess) => {
+                    if (!isSuccess) {
+                        hideLoading();
+                        showLogin();
+                    }
+                });
+
             })
             .catch((err) => {
                 hideLoading();
@@ -79,9 +92,9 @@ export const RegistrationForm = ({showLogin}: { showLogin: VoidFn }) => {
         const isEnterKeyPressed = ev.keyCode === 13 || String(ev.key)
             .toLowerCase() === 'enter';
         if (isEnterKeyPressed && formValidState.email && formValidState.phoneNumber) {
-            doLogin();
+            doRegister();
         }
-    }, [doLogin, formValidState.email, formValidState.phoneNumber]);
+    }, [doRegister, formValidState.email, formValidState.phoneNumber]);
 
 
     return (
@@ -118,8 +131,8 @@ export const RegistrationForm = ({showLogin}: { showLogin: VoidFn }) => {
                     <SimpleButton
                         style={{width: '100%'}}
                         variant='contained'
-                        onClick={doLogin}
-                        loading={isLoading}
+                        onClick={doRegister}
+                        loading={isLoading || isLoggingIn}
                         disabled={!formValidState.email || !formValidState.phoneNumber}>
                         ЗАРЕГИСТРИРОВАТЬСЯ</SimpleButton>
                 </FlexBox>
