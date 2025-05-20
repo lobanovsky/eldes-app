@@ -7,6 +7,7 @@ import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
 import store, {persistor} from './store';
+import {SnackbarProvider} from "notistack";
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
@@ -15,7 +16,9 @@ root.render(
     <React.StrictMode>
         <Provider store={store}>
             <PersistGate loading={null} persistor={persistor}>
+                <SnackbarProvider autoHideDuration={3000} maxSnack={5}>
                 <App/>
+                </SnackbarProvider>
             </PersistGate>
         </Provider>
     </React.StrictMode>

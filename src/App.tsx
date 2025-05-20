@@ -15,6 +15,8 @@ import {onSuccessLoadUser} from "views/auth/login/helpers";
 import {LoginView} from 'views/auth/login';
 import './App.css';
 import {IS_DEBUG} from "utils/constants";
+import {getMobileOperatingSystem} from "./utils/utils";
+import {useNotifications} from "./hooks";
 
 
 const theme = createTheme({
@@ -44,8 +46,10 @@ const Layout = styled(FlexBox)`
 function App() {
     const dispatch = useDispatch();
     const auth = useSelector(getAuth);
+    const {showMessage} = useNotifications();
     const {
         user,
+        isLoggingIn,
         isUserLoggedIn,
         isCheckingToken
     } = auth;
@@ -60,22 +64,30 @@ function App() {
 
     }, []);
 
+    useEffect(() => {
+        if (isUserLoggedIn && !isCheckingToken && !isLoggingIn) {
+            const userOS = getMobileOperatingSystem();
+            if (user.user.email === 'ifsogirl91@gmail.com') {
+                showMessage(`User device: [${userOS}]`);
+            }
+        }
+
+    }, [isUserLoggedIn, user?.user.email, isLoggingIn, isCheckingToken]);
+
     return (
         <ThemeProvider theme={theme}>
-            <SnackbarProvider autoHideDuration={3000} maxSnack={5}>
-                <CssBaseline/>
-                <div className="App" style={{backgroundColor: '#F6F0F0'}}>
-                    {isCheckingToken && <Loading/>}
-                    <Layout style={IS_DEBUG ? {background: '#f48ca7'} : {}}>
-                        <AppHeader/>
-                        <ViewContainer className="app-content">
-                            {isUserLoggedIn && user?.token && !isCheckingToken ? <EldesController/> : <LoginView/>}
-                        </ViewContainer>
-                        {/*<AppFooter/>*/}
-                    </Layout>
+            <CssBaseline/>
+            <div className="App" style={{backgroundColor: '#F6F0F0'}}>
+                {isCheckingToken && <Loading/>}
+                <Layout style={IS_DEBUG ? {background: '#f48ca7'} : {}}>
+                    <AppHeader/>
+                    <ViewContainer className="app-content">
+                        {isUserLoggedIn && user?.token && !isCheckingToken ? <EldesController/> : <LoginView/>}
+                    </ViewContainer>
+                    {/*<AppFooter/>*/}
+                </Layout>
 
-                </div>
-            </SnackbarProvider>
+            </div>
         </ThemeProvider>
     );
 }
