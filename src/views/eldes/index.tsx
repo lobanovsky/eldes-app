@@ -32,7 +32,7 @@ export const EldesController = () => {
 
     const loadDevices = useCallback(() => {
         setLoading(true);
-        getDevices(notificationsApi, (isSuccess, loadedMap) => {
+        getDevices(user.user.id, notificationsApi, (isSuccess, loadedMap) => {
             setLoading(false);
             if (isSuccess && loadedMap?.zones?.length) {
                 setData(loadedMap);

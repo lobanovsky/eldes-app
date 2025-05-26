@@ -1,6 +1,7 @@
 import axios from "axios";
 import {ServerError} from "../../utils/types";
 import {NotificationsHookResult} from "../../hooks/use-notifications";
+import {getMobileOperatingSystem, UserPlatform} from "../../utils/utils";
 
 export type AreaType = 'PARKING' | "TERRITORY";
 export type ActionCallbackWithData<T> = (isSuccess: boolean, data?: T | null, serverError?: ServerError  | null) => void;
@@ -21,6 +22,7 @@ export interface Zone {
 
 export interface UserDevices {
     userId: string;
+    platform?: string;
     zones: Zone[];
 }
 
@@ -29,10 +31,29 @@ const findDevice = (devices: Device[], searchName: string)=> {
     return  devices.find(({name}) => name.toLowerCase().includes(searchStrLowercase));
 }
 
-export const getDevices = ({showError}: NotificationsHookResult, onFinish: ActionCallbackWithData<UserDevices>) => {
+const saveUserPlatform = (userId: number, platform: UserPlatform) => {
+    axios.patch(`/api/private/users/${userId}/platform`, {
+        platform
+    })
+        .then(() => {
+
+        })
+        .catch(e => {
+            console.error('Ошибка обновления платформы пользователя');
+            console.log(e);
+        })
+}
+
+
+
+export const getDevices = (userId: number,{showError}: NotificationsHookResult, onFinish: ActionCallbackWithData<UserDevices>) => {
     axios.get('/api/private/devices')
         .then(({data = {zones: []}}) => {
             onFinish(true, (data || {zones: []}) as UserDevices);
+            const userOS = getMobileOperatingSystem();
+            if (userOS && (!data.platform ||  userOS !== data.platform)) {
+                saveUserPlatform(userId, userOS);
+            }
         })
         .catch((err: ServerError) => {
             showError('Не удалось загрузить список шлагбаумов', err);

@@ -64,16 +64,6 @@ function App() {
 
     }, []);
 
-    useEffect(() => {
-        if (isUserLoggedIn && !isCheckingToken && !isLoggingIn) {
-            const userOS = getMobileOperatingSystem();
-            if (user.user.email === 'ifsogirl91@gmail.com') {
-                showMessage(`User device: [${userOS}]`);
-            }
-        }
-
-    }, [isUserLoggedIn, user?.user.email, isLoggingIn, isCheckingToken]);
-
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline/>

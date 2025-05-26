@@ -60,6 +60,9 @@ const authSlice = createSlice({
             state.user.loginEmail = payload.email;
             state.isCheckingToken = false;
         },
+        platformChanged: (state: AuthStoreState,{ payload }: PayloadAction<string>) => {
+            state.user.platform = payload;
+        },
     }
 });
 
@@ -68,7 +71,8 @@ export const {
     loginSuccess,
     loginError,
     logout,
-    loginPasswordGenerated
+    loginPasswordGenerated,
+    platformChanged
 } = authSlice.actions;
 
 // @ts-ignore

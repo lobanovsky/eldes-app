@@ -9,6 +9,7 @@ export interface UserInfo  {
 }
 export interface LoginData {
     token: string;
+    platform?: string;
     loginPassword?: string;
     loginEmail?: string;
     user: UserInfo
