@@ -15,7 +15,7 @@ interface FlexBoxProps {
 export const FlexBox = styled.div<StyledComponentProps<FlexBoxProps>>`
     display: ${(p: any) => (p.inline ? 'inline-flex' : 'flex')};
     gap: ${(p: any) => `${p.gap || '1em'}`};
-    align-items: center;
+    align-items: ${(p: any) => p['align-items'] || 'center'};;
     flex-direction: ${(p: any) => p['flex-direction'] || 'column'};
     justify-content:  ${(p: any) => p['justify-content'] || 'flex-end'};
     width: ${(p: any) => (p?.widthPercent || 0) > 0 ? `${p.widthPercent}%` : 'auto'};
