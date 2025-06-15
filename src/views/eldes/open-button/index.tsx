@@ -1,5 +1,4 @@
-
-import {useCallback, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import axios from "axios";
 import {Button, styled} from "@mui/material";
 import {Device} from "../services";
@@ -27,11 +26,34 @@ const StyledButton = styled(Button)<{ color: string }>`
     &:not(:last-child) {
         margin-bottom: 1em;
     }
+    
+    &.open-delayed {
+        &:disabled {
+            color: #fa1e72;
+        }
+        
+    }
 `
 
 export const GateOpenButton = ({userId, device, loadDevices}: GateOpenProps) => {
     const [loading, setLoading] = useState(false);
-    const {showError, showMessage} = useNotifications()
+    const {showError, showMessage} = useNotifications();
+    const [delayCountdown, setCountdown] = useState(0);
+    let timer = 0;
+
+    const countdown = useCallback(() => {
+        setCountdown(60);
+        // @ts-ignore
+        timer = setInterval(() => {
+            setCountdown((time) => {
+                if (time === 0) {
+                    clearInterval(timer);
+                    timer = 0;
+                    return 0;
+                } else return time - 1;
+            });
+        }, 1000);
+    }, []);
 
     const openEldes = useCallback(() => {
         if (!device?.deviceKey) {
@@ -40,7 +62,6 @@ export const GateOpenButton = ({userId, device, loadDevices}: GateOpenProps) => 
         setLoading(true);
         axios.post(`api/private/devices/${device.id}/open`, {key: device.deviceKey, userid: userId})
             .then(() => {
-                // showMessage('Шлагбаум открыт!', {autoHideDuration: 2000});
                 setLoading(false);
             })
             .catch(err => {
@@ -50,21 +71,34 @@ export const GateOpenButton = ({userId, device, loadDevices}: GateOpenProps) => 
     }, [userId, device?.deviceKey]);
 
     const openWithDelay = useCallback(() => {
+
         if (!device?.deviceKey) {
             return;
         }
 
         setLoading(true);
-        axios.post(`api/private/devices/${device.id}/open-delayed?delay=${PARKING_GATE_DELAY_SECONDS}`, {key: device.deviceKey, userid: userId})
+        axios.post(`api/private/devices/${device.id}/open-delayed?delay=${PARKING_GATE_DELAY_SECONDS}`, {
+            key: device.deviceKey,
+            userid: userId
+        })
             .then(() => {
-                showMessage(`Шлагбаум откроется через ${PARKING_GATE_DELAY_SECONDS} сек`, {autoHideDuration: 2000});
+                showMessage(`Ворота откроются через ${PARKING_GATE_DELAY_SECONDS} сек`, {autoHideDuration: 5000});
                 setLoading(false);
+                countdown();
             })
             .catch(err => {
                 setLoading(false);
                 showError('Не удалось открыть шлагбаум', err);
             })
     }, [userId, device?.deviceKey]);
+
+
+    useEffect(() => () => {
+        clearInterval(timer);
+        timer = 0;
+    }, []);
+
+    const isParkingOut = (device?.name || '')?.toLowerCase() === 'паркинг-б';
 
     const openBtn = <StyledButton
         className='custom-button'
@@ -73,11 +107,11 @@ export const GateOpenButton = ({userId, device, loadDevices}: GateOpenProps) => 
         color={device?.color || 'gray'}
         size='large'
         loading={loading}
+        disabled={isParkingOut && delayCountdown > 0}
         onClick={openEldes}>
         {device?.label}
     </StyledButton>;
 
-    const isParkingOut = (device?.name || '')?.toLowerCase() === 'паркинг-б';
     return !isParkingOut ? openBtn : <FlexBox flex-direction='row' gap={'2em'
     } justify-content='flex-start' align-items='flex-start'>
         {openBtn}
@@ -89,8 +123,10 @@ export const GateOpenButton = ({userId, device, loadDevices}: GateOpenProps) => 
             color={device?.color || 'gray'}
             size='large'
             loading={loading}
+            disabled={delayCountdown > 0}
             onClick={openWithDelay}>
-            {PARKING_GATE_DELAY_SECONDS} сек
+            {delayCountdown > 1 ? delayCountdown : `${PARKING_GATE_DELAY_SECONDS} сек`}
+
         </StyledButton>
     </FlexBox>
 }
