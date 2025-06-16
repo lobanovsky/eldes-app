@@ -12,7 +12,7 @@ interface GateOpenProps {
     loadDevices: () => void;
 }
 
-const PARKING_GATE_DELAY_SECONDS = 60;
+const PARKING_GATE_DELAY_SECONDS = 45;
 
 const StyledButton = styled(Button)<{ color: string }>`
 
