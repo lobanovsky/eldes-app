@@ -42,7 +42,7 @@ export const GateOpenButton = ({userId, device, loadDevices}: GateOpenProps) => 
     let timer = 0;
 
     const countdown = useCallback(() => {
-        setCountdown(60);
+        setCountdown(PARKING_GATE_DELAY_SECONDS);
         // @ts-ignore
         timer = setInterval(() => {
             setCountdown((time) => {
