@@ -5,6 +5,7 @@ import {Device} from "../services";
 import {FlexBox} from "components/styled";
 import {useNotifications} from "hooks";
 
+import PhoneIcon from '@mui/icons-material/Phone';
 
 interface GateOpenProps {
     device: Device | null;
@@ -24,14 +25,25 @@ const StyledButton = styled(Button)<{ color: string }>`
     background-color: ${(p: any) => p.color || 'gray'};
 
     &:not(:last-child) {
-        margin-bottom: 1em;
+        //margin-bottom: 1.5em;
     }
-    
+
     &.open-delayed {
         &:disabled {
             color: #fa1e72;
         }
-        
+
+    }
+`
+
+const GateComposedButton = styled(FlexBox)`
+    flex-direction: row;
+    gap: 2em;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    &:not(:last-child) {
+        margin-bottom: 2em;
     }
 `
 
@@ -92,6 +104,13 @@ export const GateOpenButton = ({userId, device, loadDevices}: GateOpenProps) => 
             })
     }, [userId, device?.deviceKey]);
 
+    const callToOpen = useCallback((phoneNumber: string) => {
+        //todo проверить на русс телефон
+        if (phoneNumber) {
+            window.open(`tel:${phoneNumber}`);
+        }
+
+    }, []);
 
     useEffect(() => () => {
         clearInterval(timer);
@@ -112,21 +131,24 @@ export const GateOpenButton = ({userId, device, loadDevices}: GateOpenProps) => 
         {device?.label}
     </StyledButton>;
 
-    return !isParkingOut ? openBtn : <FlexBox flex-direction='row' gap={'2em'
-    } justify-content='flex-start' align-items='flex-start'>
-        {openBtn}
-        <StyledButton
-            style={{width: '120px', paddingTop: 12, paddingBottom: 12, lineHeight: '32px'}}
-            className='custom-button open-delayed'
-            variant="contained"
-            // @ts-ignore
-            color={device?.color || 'gray'}
-            size='large'
-            loading={loading}
-            disabled={delayCountdown > 0}
-            onClick={openWithDelay}>
-            {delayCountdown > 1 ? delayCountdown : `${PARKING_GATE_DELAY_SECONDS} сек`}
-
-        </StyledButton>
-    </FlexBox>
+    return <GateComposedButton>
+        <>
+            {!!device?.phoneNumber && <StyledButton
+                style={{width: '120px', paddingTop: 12, paddingBottom: 12, lineHeight: '32px'}}
+                className='custom-button open-delayed'
+                variant="contained"
+                // @ts-ignore
+                color={device?.color || 'gray'}
+                size='large'
+                loading={loading}
+                disabled={delayCountdown > 0}
+                onClick={() => {
+                    callToOpen(device?.phoneNumber);
+                }}>
+                <PhoneIcon style={{fontSize: '32px'}}/>
+            </StyledButton>
+            }
+            {openBtn}
+        </>
+    </GateComposedButton>
 }

@@ -15,6 +15,7 @@ import {getAuth} from "store/auth/selectors";
 const ZoneCard = styled(Card)`
     min-width: 300px;
     max-width: 420px;
+    padding: 0.5em 0;
     width: 100%;
     background-color: rgba(255, 255, 255, 0.5) !important;
 `
@@ -58,7 +59,7 @@ export const EldesController = () => {
             {data.zones.map((zone) =>
                 <ZoneCard variant='outlined' key={zone.id}>
                     <CardContent>
-                        <Typography variant="h6" component="div" style={{marginBottom: '0.5em'}}>
+                        <Typography variant="h6" component="div" style={{marginBottom: '1em'}}>
                             {zone.name}
                         </Typography>
                         {zone.devices.map((device) => (
