@@ -105,9 +105,8 @@ export const GateOpenButton = ({userId, device, loadDevices}: GateOpenProps) => 
     }, [userId, device?.deviceKey]);
 
     const callToOpen = useCallback((phoneNumber: string) => {
-        //todo проверить на русс телефон
         if (phoneNumber&& phoneNumber.startsWith('7')) {
-            window.open(`tel:+${phoneNumber}`);
+            window.open(`tel:+${phoneNumber}`, "_blank");
         }
 
     }, []);
