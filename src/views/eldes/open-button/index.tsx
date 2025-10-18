@@ -1,6 +1,7 @@
 import {useCallback, useEffect, useState} from "react";
 import axios from "axios";
-import {Button, styled} from "@mui/material";
+import styled from "styled-components";
+import {Button, styled as styledMui} from "@mui/material";
 import {Device} from "../services";
 import {FlexBox} from "components/styled";
 import {useNotifications} from "hooks";
@@ -15,7 +16,25 @@ interface GateOpenProps {
 
 const PARKING_GATE_DELAY_SECONDS = 45;
 
-const StyledButton = styled(Button)<{ color: string }>`
+const StyledLink = styled.a<{ color?: string }>`
+    width: 70px;
+    line-height: 70px;
+    height: 70px;
+    padding-top: 8px;
+    min-width: 70px;
+    color: rgb(8, 14, 12);
+    border-radius: 4px;
+    font-size: 24px;
+    text-transform: none !important;
+    background-color: ${(p: any) => p.color || 'gray'};
+    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+
+    &:hover {
+        box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+    }
+`;
+
+const StyledButton = styledMui(Button)<{ color: string }>`
 
     width: 100%;
     height: 72px;
@@ -105,7 +124,7 @@ export const GateOpenButton = ({userId, device, loadDevices}: GateOpenProps) => 
     }, [userId, device?.deviceKey]);
 
     const callToOpen = useCallback((phoneNumber: string) => {
-        if (phoneNumber&& phoneNumber.startsWith('7')) {
+        if (phoneNumber && phoneNumber.startsWith('7')) {
             window.open(`tel:+${phoneNumber}`, "_blank");
         }
 
@@ -132,20 +151,24 @@ export const GateOpenButton = ({userId, device, loadDevices}: GateOpenProps) => 
 
     return <GateComposedButton>
         <>
-            {!!device?.phoneNumber && <StyledButton
-                style={{width: '120px', paddingTop: 12, paddingBottom: 12, lineHeight: '32px'}}
-                className='custom-button open-delayed'
-                variant="contained"
-                // @ts-ignore
-                color={device?.color || 'gray'}
-                size='large'
-                loading={loading}
-                disabled={delayCountdown > 0}
-                onClick={() => {
-                    callToOpen(device?.phoneNumber);
-                }}>
-                <PhoneIcon style={{fontSize: '32px'}}/>
-            </StyledButton>
+            {!!device?.phoneNumber &&
+                <StyledLink color={device?.color || 'gray'} href={`tel:+${device.phoneNumber}`} role='link'>
+                    <PhoneIcon style={{fontSize: '32px'}}/>
+                </StyledLink>
+                // <StyledButton
+                // style={{width: '120px', paddingTop: 12, paddingBottom: 12, lineHeight: '32px'}}
+                // className='custom-button open-delayed'
+                // variant="contained"
+                // // @ts-ignore
+                // color={device?.color || 'gray'}
+                // size='large'
+                // loading={loading}
+                // disabled={delayCountdown > 0}
+                // onClick={() => {
+                //     callToOpen(device?.phoneNumber);
+                // }}>
+
+                // </StyledButton>
             }
             {openBtn}
         </>
