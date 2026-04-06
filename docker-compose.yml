@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: ${DOCKERFILE:-Dockerfile}
-    image: ${CONTAINER_REGISTRY}/eldes-app:${TAG}
+    image: lobanovsky/eldes-app:${TAG}
     container_name: eldes-app
     restart: always
     volumes:
