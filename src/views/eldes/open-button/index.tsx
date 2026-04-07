@@ -2,7 +2,6 @@ import {useCallback, useEffect, useState} from "react";
 import axios from "axios";
 import styled from "styled-components";
 import {Button, styled as styledMui} from "@mui/material";
-import {useSelector} from "react-redux";
 import {Device} from "../services";
 import {FlexBox} from "components/styled";
 import {useNotifications} from "hooks";
@@ -72,17 +71,6 @@ export const GateOpenButton = ({userId, device, loadDevices}: GateOpenProps) => 
     const {showError, showMessage} = useNotifications();
     const [delayCountdown, setCountdown] = useState(0);
     let timer = 0;
-    const user = useSelector((state: any) => state.auth.user.user);
-
-    const logEvent = useCallback((deviceId: string, label: string) => {
-        axios.post(`api/private/devices/${deviceId}/event-log`, {
-            status: 'Открыто',
-            line: `${label} через приложение`,
-            method: 'Приложение',
-            userName: user?.email,
-            phoneNumber: user?.phoneNumber,
-        }).catch(() => {});
-    }, [user?.email, user?.phoneNumber]);
 
     const countdown = useCallback(() => {
         setCountdown(PARKING_GATE_DELAY_SECONDS);
@@ -106,7 +94,6 @@ export const GateOpenButton = ({userId, device, loadDevices}: GateOpenProps) => 
         axios.post(`api/private/devices/${device.id}/open`, {key: device.deviceKey, userid: userId})
             .then(() => {
                 setLoading(false);
-                logEvent(device.id, device.label || 'Шлагбаум');
             })
             .catch(err => {
                 setLoading(false);
@@ -129,7 +116,6 @@ export const GateOpenButton = ({userId, device, loadDevices}: GateOpenProps) => 
                 showMessage(`Ворота откроются через ${PARKING_GATE_DELAY_SECONDS} сек`, {autoHideDuration: 5000});
                 setLoading(false);
                 countdown();
-                logEvent(device.id, device.label || 'Шлагбаум');
             })
             .catch(err => {
                 setLoading(false);
