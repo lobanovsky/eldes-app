@@ -26,11 +26,11 @@ export function LoginView() {
         <div className="view login" style={{height: '100%'}}>
             {/*@ts-ignore*/}
             <FlexBox justify-content="center" height='100%'>
-                {/*@ts-ignore*/}
-                {formType === 'LOGIN' &&
-                    <LoginForm  showRegistration={showRegistration} showResetPassword={showResetPassword}/>}
-                {formType === 'REGISTER' && <RegistrationForm showLogin={showLogin}/>}
-                {formType === 'RESET_PASSWORD' && <ResetPasswordForm showLogin={showLogin}/>}
+                {formType === 'LOGIN'
+                    ? <LoginForm showRegistration={showRegistration} showResetPassword={showResetPassword}/>
+                    : null}
+                {formType === 'REGISTER' ? <RegistrationForm showLogin={showLogin}/> : null}
+                {formType === 'RESET_PASSWORD' ? <ResetPasswordForm showLogin={showLogin}/> : null}
             </FlexBox>
         </div>
     );
