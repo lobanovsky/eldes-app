@@ -1,7 +1,8 @@
+import React from "react";
 import styled from "styled-components";
 import {Button, Container as MuiContainer, TextField} from "@mui/material";
 
-export type StyledComponentProps<T> = T & { children?: JSX.Element | JSX.Element[] };
+export type StyledComponentProps<T> = T & { children?: React.ReactNode };
 
 interface FlexBoxProps {
     gap?: string;
