@@ -59,7 +59,7 @@ export const EldesController = () => {
             {data.zones.map((zone) =>
                 <ZoneCard variant='outlined' key={zone.id}>
                     <CardContent>
-                        <Typography variant="h6" component="div" style={{marginBottom: '1em'}}>
+                        <Typography variant="h6" component="div" style={{marginBottom: '1em', textAlign: 'left'}}>
                             {zone.name}
                         </Typography>
                         {zone.devices.map((device) => (
