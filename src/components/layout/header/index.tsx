@@ -32,10 +32,17 @@ export const AppHeader = () => {
                     <RefreshIcon style={{animation: refreshing ? 'spin 0.8s linear infinite' : undefined}}/>
                 </IconButton>
             </Tooltip>
-            <div className='made-in' style={{flex: '1 0 auto', textAlign: 'center'}}>
-                Сделано в
-                <a href="https://lobanovsky.ru" target="_blank"
-                   style={{textTransform: 'none', margin: '0 4px', color: '#1976d2', textDecoration: 'none'}}>Бюро Лобановского</a>
+            <div style={{flex: '1 0 auto', textAlign: 'center'}}>
+                <a href="https://tbank.ru/cf/8ccZXC5ZbA3" target="_blank"
+                   style={{
+                       textDecoration: 'none',
+                       color: '#ff3b6b',
+                       fontWeight: 600,
+                       fontSize: '0.9rem',
+                       letterSpacing: '0.01em',
+                   }}>
+                    ☕ Поблагодарить разработчика
+                </a>
             </div>
             <AuthDebugButtons/>
         </FlexBox>
