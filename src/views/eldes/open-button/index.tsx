@@ -7,6 +7,7 @@ import {FlexBox} from "components/styled";
 import {useNotifications} from "hooks";
 
 import PhoneIcon from '@mui/icons-material/Phone';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 interface GateOpenProps {
     device: Device | null;
@@ -42,6 +43,11 @@ const StyledButton = styledMui(Button)<{ color: string }>`
     font-size: 24px;
     text-transform: none !important;
     background-color: ${(p: any) => p.color || 'gray'};
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 20px;
+    padding-right: 16px;
 
     &:not(:last-child) {
         //margin-bottom: 1.5em;
@@ -137,6 +143,9 @@ export const GateOpenButton = ({userId, device, loadDevices}: GateOpenProps) => 
 
     const isParkingOut = (device?.name || '')?.toLowerCase() === 'паркинг-б';
 
+    const labelLower = (device?.label || '').toLowerCase();
+    const arrowDeg = labelLower.includes('заехать') ? -45 : 45;
+
     const openBtn = <StyledButton
         className='custom-button'
         variant="contained"
@@ -146,7 +155,8 @@ export const GateOpenButton = ({userId, device, loadDevices}: GateOpenProps) => 
         loading={loading}
         disabled={isParkingOut && delayCountdown > 0}
         onClick={openEldes}>
-        {device?.label}
+        <span style={{textAlign: 'left'}}>{device?.label}</span>
+        <ArrowForwardIcon style={{transform: `rotate(${arrowDeg}deg)`, fontSize: '28px', flexShrink: 0}}/>
     </StyledButton>;
 
     return <GateComposedButton>
