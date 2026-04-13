@@ -1,7 +1,7 @@
-import {useCallback, useEffect, useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import axios from "axios";
 import styled from "styled-components";
-import {Button, styled as styledMui} from "@mui/material";
+import {Button, CircularProgress, styled as styledMui} from "@mui/material";
 import {Device} from "../services";
 import {FlexBox} from "components/styled";
 import {useNotifications} from "hooks";
@@ -16,6 +16,7 @@ interface GateOpenProps {
 }
 
 const PARKING_GATE_DELAY_SECONDS = 45;
+const ACTIVATING_FEEDBACK_MS = 2000;
 
 const StyledLink = styled.a<{ color?: string }>`
     width: 70px;
@@ -61,6 +62,17 @@ const StyledButton = styledMui(Button)<{ color: string }>`
     }
 `
 
+const ArrowCircle = styled.div`
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+`
+
 const GateComposedButton = styled(FlexBox)`
     flex-direction: row;
     gap: 2em;
@@ -76,6 +88,8 @@ export const GateOpenButton = ({userId, device, loadDevices}: GateOpenProps) => 
     const [loading, setLoading] = useState(false);
     const {showError, showMessage} = useNotifications();
     const [delayCountdown, setCountdown] = useState(0);
+    const [isActivating, setIsActivating] = useState(false);
+    const activatingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
     let timer = 0;
 
     const countdown = useCallback(() => {
@@ -92,10 +106,18 @@ export const GateOpenButton = ({userId, device, loadDevices}: GateOpenProps) => 
         }, 1000);
     }, []);
 
+    const triggerActivating = useCallback(() => {
+        setIsActivating(true);
+        activatingTimer.current = setTimeout(() => {
+            setIsActivating(false);
+        }, ACTIVATING_FEEDBACK_MS);
+    }, []);
+
     const openEldes = useCallback(() => {
         if (!device?.deviceKey) {
             return;
         }
+        triggerActivating();
         setLoading(true);
         axios.post(`api/private/devices/${device.id}/open`, {key: device.deviceKey, userid: userId})
             .then(() => {
@@ -105,7 +127,7 @@ export const GateOpenButton = ({userId, device, loadDevices}: GateOpenProps) => 
                 setLoading(false);
                 showError('Не удалось открыть шлагбаум', err);
             })
-    }, [userId, device?.deviceKey]);
+    }, [userId, device?.deviceKey, triggerActivating]);
 
     const openWithDelay = useCallback(() => {
 
@@ -113,6 +135,7 @@ export const GateOpenButton = ({userId, device, loadDevices}: GateOpenProps) => 
             return;
         }
 
+        triggerActivating();
         setLoading(true);
         axios.post(`api/private/devices/${device.id}/open-delayed?delay=${PARKING_GATE_DELAY_SECONDS}`, {
             key: device.deviceKey,
@@ -127,7 +150,7 @@ export const GateOpenButton = ({userId, device, loadDevices}: GateOpenProps) => 
                 setLoading(false);
                 showError('Не удалось открыть шлагбаум', err);
             })
-    }, [userId, device?.deviceKey]);
+    }, [userId, device?.deviceKey, triggerActivating]);
 
     const callToOpen = useCallback((phoneNumber: string) => {
         if (phoneNumber && phoneNumber.startsWith('7')) {
@@ -139,12 +162,13 @@ export const GateOpenButton = ({userId, device, loadDevices}: GateOpenProps) => 
     useEffect(() => () => {
         clearInterval(timer);
         timer = 0;
+        if (activatingTimer.current) clearTimeout(activatingTimer.current);
     }, []);
 
     const isParkingOut = (device?.name || '')?.toLowerCase() === 'паркинг-б';
 
     const labelLower = (device?.label || '').toLowerCase();
-    const arrowDeg = labelLower.includes('заехать') ? -45 : 45;
+    const arrowDeg = labelLower.includes('заехать') ? 45 : -45;
 
     const openBtn = <StyledButton
         className='custom-button'
@@ -153,10 +177,22 @@ export const GateOpenButton = ({userId, device, loadDevices}: GateOpenProps) => 
         color={device?.color || 'gray'}
         size='large'
         loading={loading}
-        disabled={isParkingOut && delayCountdown > 0}
+        disabled={isActivating || (isParkingOut && delayCountdown > 0)}
+        sx={{
+            backgroundColor: isActivating ? '#f5a623 !important' : undefined,
+            '&.Mui-disabled': {
+                backgroundColor: isActivating ? '#f5a623' : undefined,
+                color: 'rgb(8, 14, 12)',
+            }
+        }}
         onClick={openEldes}>
-        <span style={{textAlign: 'left'}}>{device?.label}</span>
-        <ArrowForwardIcon style={{transform: `rotate(${arrowDeg}deg)`, fontSize: '28px', flexShrink: 0}}/>
+        <span style={{textAlign: 'left'}}>{isActivating ? 'Ждите...' : device?.label}</span>
+        <ArrowCircle>
+            {isActivating
+                ? <CircularProgress size={20} style={{color: 'rgb(8, 14, 12)'}}/>
+                : <ArrowForwardIcon style={{transform: `rotate(${arrowDeg}deg)`, fontSize: '20px'}}/>
+            }
+        </ArrowCircle>
     </StyledButton>;
 
     return <GateComposedButton>
@@ -165,20 +201,6 @@ export const GateOpenButton = ({userId, device, loadDevices}: GateOpenProps) => 
                 <StyledLink color={device?.color || 'gray'} href={`tel:+${device.phoneNumber}`} role='link'>
                     <PhoneIcon style={{fontSize: '32px'}}/>
                 </StyledLink>
-                // <StyledButton
-                // style={{width: '120px', paddingTop: 12, paddingBottom: 12, lineHeight: '32px'}}
-                // className='custom-button open-delayed'
-                // variant="contained"
-                // // @ts-ignore
-                // color={device?.color || 'gray'}
-                // size='large'
-                // loading={loading}
-                // disabled={delayCountdown > 0}
-                // onClick={() => {
-                //     callToOpen(device?.phoneNumber);
-                // }}>
-
-                // </StyledButton>
             }
             {openBtn}
         </>
