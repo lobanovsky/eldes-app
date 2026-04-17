@@ -5,7 +5,6 @@ import { Card, CardContent, Typography} from "@mui/material";
 import {UserDevices, getDevices} from "./services";
 import {GateOpenButton} from "./open-button";
 import {Loading} from "components/loading";
-import {VkAd} from "components/vk-ad";
 import {FlexBox} from "components/styled";
 import {useNotifications} from "hooks";
 import {getAuth} from "store/auth/selectors";
@@ -74,7 +73,6 @@ export const EldesController = () => {
                     </CardContent>
                 </ZoneCard>
             )}
-            <VkAd/>
         </FlexBox>
     )
 }
