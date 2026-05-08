@@ -5,6 +5,9 @@ import {Button, CircularProgress, styled as styledMui} from "@mui/material";
 import {Device} from "../services";
 import {FlexBox} from "components/styled";
 import {useNotifications} from "hooks";
+import {useSelector} from "react-redux";
+import {getSoundEnabled} from "store/auth/selectors";
+import {playGateSound} from "utils/sound";
 
 import PhoneIcon from '@mui/icons-material/Phone';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
@@ -90,6 +93,7 @@ export const GateOpenButton = ({userId, device, loadDevices}: GateOpenProps) => 
     const [delayCountdown, setCountdown] = useState(0);
     const [isActivating, setIsActivating] = useState(false);
     const activatingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const soundEnabled = useSelector(getSoundEnabled);
     let timer = 0;
 
     const countdown = useCallback(() => {
@@ -108,10 +112,11 @@ export const GateOpenButton = ({userId, device, loadDevices}: GateOpenProps) => 
 
     const triggerActivating = useCallback(() => {
         setIsActivating(true);
+        if (soundEnabled) playGateSound();
         activatingTimer.current = setTimeout(() => {
             setIsActivating(false);
         }, ACTIVATING_FEEDBACK_MS);
-    }, []);
+    }, [soundEnabled]);
 
     const openEldes = useCallback(() => {
         if (!device?.deviceKey) {

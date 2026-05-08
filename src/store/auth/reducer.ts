@@ -21,6 +21,7 @@ export interface AuthStoreState {
     isLoadingUser: boolean,
     isLoggingIn: boolean,
     isUserLoggedIn: boolean,
+    soundEnabled: boolean,
 }
 
 const authSlice = createSlice({
@@ -32,7 +33,8 @@ const authSlice = createSlice({
         isCheckingToken: true,
         isLoadingUser: false,
         isLoggingIn: false,
-        isUserLoggedIn: false
+        isUserLoggedIn: false,
+        soundEnabled: true,
     },
     reducers: {
         loginStarted: (state: AuthStoreState) => {
@@ -63,6 +65,9 @@ const authSlice = createSlice({
         platformChanged: (state: AuthStoreState,{ payload }: PayloadAction<string>) => {
             state.user.platform = payload;
         },
+        toggleSound: (state: AuthStoreState) => {
+            state.soundEnabled = !state.soundEnabled;
+        },
     }
 });
 
@@ -72,7 +77,8 @@ export const {
     loginError,
     logout,
     loginPasswordGenerated,
-    platformChanged
+    platformChanged,
+    toggleSound,
 } = authSlice.actions;
 
 // @ts-ignore

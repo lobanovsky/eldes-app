@@ -2,8 +2,13 @@
 import React, {useState} from "react";
 import {IconButton, Tooltip} from "@mui/material";
 import RefreshIcon from '@mui/icons-material/Refresh';
+import VolumeUpIcon from '@mui/icons-material/VolumeUp';
+import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 import {Container, FlexBox} from "../../styled";
 import {AuthDebugButtons} from "../../auth/DebugButtons";
+import {useSelector, useDispatch} from "react-redux";
+import {getSoundEnabled} from "store/auth/selectors";
+import {toggleSound} from "store/auth/reducer";
 
 const handleUpdate = async () => {
     if ('caches' in window) {
@@ -19,6 +24,8 @@ const handleUpdate = async () => {
 
 export const AppHeader = () => {
     const [refreshing, setRefreshing] = useState(false);
+    const soundEnabled = useSelector(getSoundEnabled);
+    const dispatch = useDispatch();
 
     const onRefresh = async () => {
         setRefreshing(true);
@@ -30,6 +37,11 @@ export const AppHeader = () => {
             <Tooltip title="Обновить приложение">
                 <IconButton onClick={onRefresh} disabled={refreshing} size="small">
                     <RefreshIcon style={{animation: refreshing ? 'spin 0.8s linear infinite' : undefined}}/>
+                </IconButton>
+            </Tooltip>
+            <Tooltip title={soundEnabled ? "Звук: вкл" : "Звук: выкл"}>
+                <IconButton onClick={() => dispatch(toggleSound())} size="small">
+                    {soundEnabled ? <VolumeUpIcon/> : <VolumeOffIcon/>}
                 </IconButton>
             </Tooltip>
             <div style={{flex: '1 0 auto', textAlign: 'center'}}>
