@@ -129,6 +129,7 @@ export const EldesController = () => {
                                 key={device.id}
                                 loadDevices={loadDevices}
                                 userId={data.userId}
+                                zoneName={zone.name}
                                 device={device}
                             />
                         ))}

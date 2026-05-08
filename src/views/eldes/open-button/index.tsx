@@ -15,6 +15,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 interface GateOpenProps {
     device: Device | null;
     userId: string;
+    zoneName: string;
     loadDevices: () => void;
 }
 
@@ -105,6 +106,37 @@ const ArrowCircle = styled.div`
     flex-shrink: 0;
 `
 
+const ButtonContent = styled.span`
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    min-width: 0;
+    width: 100%;
+    text-align: left;
+`
+
+const ActionStripe = styled.span<{ muted?: boolean; activating?: boolean; variant: 'barrier' | 'parking' }>`
+    width: 100%;
+    height: 7px;
+    border-radius: 999px;
+    background: ${(p: any) => {
+        if (p.activating) {
+            return 'linear-gradient(90deg, #f6c56f 0 18%, #7a4b12 18% 36%, #f6c56f 36% 54%, #7a4b12 54% 72%, #f6c56f 72% 100%)';
+        }
+        if (p.variant === 'parking') {
+            return 'repeating-linear-gradient(90deg, #8b5a2b 0 15px, #5f3b1d 15px 17px, #b07a3f 17px 32px, #5f3b1d 32px 34px)';
+        }
+        return 'repeating-linear-gradient(135deg, #f8fafc 0 12px, #d92d20 12px 24px)';
+    }};
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+    opacity: ${(p: any) => p.muted ? 0.45 : 0.92};
+`
+
+const ButtonLabel = styled.span`
+    overflow-wrap: anywhere;
+`
+
 const GateComposedButton = styled(FlexBox)`
     flex-direction: row;
     gap: 12px;
@@ -116,7 +148,7 @@ const GateComposedButton = styled(FlexBox)`
     }
 `
 
-export const GateOpenButton = ({userId, device, loadDevices}: GateOpenProps) => {
+export const GateOpenButton = ({userId, device, zoneName, loadDevices}: GateOpenProps) => {
     const [loading, setLoading] = useState(false);
     const {showError, showMessage} = useNotifications();
     const [delayCountdown, setCountdown] = useState(0);
@@ -204,6 +236,9 @@ export const GateOpenButton = ({userId, device, loadDevices}: GateOpenProps) => 
     const labelLower = (device?.label || '').toLowerCase();
     const arrowDeg = labelLower.includes('заехать') ? 45 : -45;
     const accentColor = getAccentColor(device?.color);
+    const buttonDisabled = isActivating || (isParkingOut && delayCountdown > 0);
+    const zoneNameLower = zoneName.toLowerCase();
+    const stripeVariant = zoneNameLower.includes('паркинг') || zoneNameLower.includes('parking') ? 'parking' : 'barrier';
 
     const openBtn = <StyledButton
         className='custom-button'
@@ -212,9 +247,12 @@ export const GateOpenButton = ({userId, device, loadDevices}: GateOpenProps) => 
         activating={isActivating}
         size='large'
         loading={loading}
-        disabled={isActivating || (isParkingOut && delayCountdown > 0)}
+        disabled={buttonDisabled}
         onClick={openEldes}>
-        <span style={{textAlign: 'left'}}>{isActivating ? 'Ждите...' : device?.label}</span>
+        <ButtonContent>
+            <ActionStripe variant={stripeVariant} activating={isActivating} muted={buttonDisabled && !isActivating}/>
+            <ButtonLabel>{isActivating ? 'Ждите...' : device?.label}</ButtonLabel>
+        </ButtonContent>
         <ArrowCircle>
             {isActivating
                 ? <CircularProgress size={20} style={{color: '#d89a35'}}/>
