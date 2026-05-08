@@ -21,32 +21,46 @@ interface GateOpenProps {
 const PARKING_GATE_DELAY_SECONDS = 45;
 const ACTIVATING_FEEDBACK_MS = 2000;
 
-const StyledLink = styled.a<{ color?: string }>`
-    width: 70px;
-    line-height: 70px;
+const getAccentColor = (color?: string) => color || '#64748b';
+
+const StyledLink = styled.a<{ accent?: string }>`
+    width: 62px;
     height: 70px;
-    padding-top: 8px;
-    min-width: 70px;
-    color: rgb(8, 14, 12);
-    border-radius: 4px;
-    font-size: 24px;
+    min-width: 62px;
+    color: #e8eef8;
+    border-radius: 8px;
+    font-size: 22px;
     text-transform: none !important;
-    background-color: ${(p: any) => p.color || 'gray'};
-    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+    background-color: #1b2430;
+    border: 1px solid #2b3544;
+    border-left: 5px solid ${(p: any) => getAccentColor(p.accent)};
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     &:hover {
-        box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+        background-color: #222d3b;
+        border-color: #3a4658;
+        border-left-color: ${(p: any) => getAccentColor(p.accent)};
+        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.34);
     }
 `;
 
-const StyledButton = styledMui(Button)<{ color: string }>`
+const StyledButton = styledMui(Button, {
+    shouldForwardProp: (prop) => prop !== 'accent' && prop !== 'activating',
+})<{ accent?: string; activating?: boolean }>`
 
     width: 100%;
-    height: 72px;
-    color: rgb(8, 14, 12);
-    font-size: 24px;
+    min-height: 70px;
+    color: #eef2f7;
+    font-size: 22px;
+    font-weight: 700;
     text-transform: none !important;
-    background-color: ${(p: any) => p.color || 'gray'};
+    background-color: ${(p: any) => p.activating ? '#2b2112' : '#1b2430'};
+    border: 1px solid ${(p: any) => p.activating ? '#9a6a26' : '#2b3544'};
+    border-left: 5px solid ${(p: any) => p.activating ? '#d89a35' : getAccentColor(p.accent)};
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -59,9 +73,24 @@ const StyledButton = styledMui(Button)<{ color: string }>`
 
     &.open-delayed {
         &:disabled {
-            color: #fa1e72;
+            color: #d89a35;
         }
 
+    }
+
+    &:hover {
+        background-color: ${(p: any) => p.activating ? '#2b2112' : '#222d3b'};
+        border-color: ${(p: any) => p.activating ? '#9a6a26' : '#3a4658'};
+        border-left-color: ${(p: any) => p.activating ? '#d89a35' : getAccentColor(p.accent)};
+        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.34);
+    }
+
+    &.Mui-disabled {
+        color: ${(p: any) => p.activating ? '#d89a35' : '#8792a3'};
+        background-color: ${(p: any) => p.activating ? '#2b2112' : '#151c25'};
+        border-color: ${(p: any) => p.activating ? '#9a6a26' : '#2b3544'};
+        border-left-color: ${(p: any) => p.activating ? '#d89a35' : getAccentColor(p.accent)};
+        opacity: 1;
     }
 `
 
@@ -69,7 +98,7 @@ const ArrowCircle = styled.div`
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    border: 2px solid currentColor;
+    border: 1px solid currentColor;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -78,12 +107,12 @@ const ArrowCircle = styled.div`
 
 const GateComposedButton = styled(FlexBox)`
     flex-direction: row;
-    gap: 2em;
+    gap: 12px;
     justify-content: flex-start;
     align-items: flex-start;
 
     &:not(:last-child) {
-        margin-bottom: 2em;
+        margin-bottom: 14px;
     }
 `
 
@@ -174,27 +203,21 @@ export const GateOpenButton = ({userId, device, loadDevices}: GateOpenProps) => 
 
     const labelLower = (device?.label || '').toLowerCase();
     const arrowDeg = labelLower.includes('заехать') ? 45 : -45;
+    const accentColor = getAccentColor(device?.color);
 
     const openBtn = <StyledButton
         className='custom-button'
         variant="contained"
-        // @ts-ignore
-        color={device?.color || 'gray'}
+        accent={accentColor}
+        activating={isActivating}
         size='large'
         loading={loading}
         disabled={isActivating || (isParkingOut && delayCountdown > 0)}
-        sx={{
-            backgroundColor: isActivating ? '#f5a623 !important' : undefined,
-            '&.Mui-disabled': {
-                backgroundColor: isActivating ? '#f5a623' : undefined,
-                color: 'rgb(8, 14, 12)',
-            }
-        }}
         onClick={openEldes}>
         <span style={{textAlign: 'left'}}>{isActivating ? 'Ждите...' : device?.label}</span>
         <ArrowCircle>
             {isActivating
-                ? <CircularProgress size={20} style={{color: 'rgb(8, 14, 12)'}}/>
+                ? <CircularProgress size={20} style={{color: '#d89a35'}}/>
                 : <ArrowForwardIcon style={{transform: `rotate(${arrowDeg}deg)`, fontSize: '20px'}}/>
             }
         </ArrowCircle>
@@ -203,7 +226,7 @@ export const GateOpenButton = ({userId, device, loadDevices}: GateOpenProps) => 
     return <GateComposedButton>
         <>
             {!!device?.phoneNumber &&
-                <StyledLink color={device?.color || 'gray'} href={`tel:+${device.phoneNumber}`} role='link'>
+                <StyledLink accent={accentColor} href={`tel:+${device.phoneNumber}`} role='link'>
                     <PhoneIcon style={{fontSize: '32px'}}/>
                 </StyledLink>
             }

@@ -1,6 +1,7 @@
 
 import React, {useState} from "react";
 import {IconButton, Tooltip} from "@mui/material";
+import {styled} from "@mui/material/styles";
 import RefreshIcon from '@mui/icons-material/Refresh';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import VolumeOffIcon from '@mui/icons-material/VolumeOff';
@@ -10,6 +11,43 @@ import {AuthDebugButtons} from "../../auth/DebugButtons";
 import {useSelector, useDispatch} from "react-redux";
 import {getSoundEnabled, getAuth} from "store/auth/selectors";
 import {toggleSound, logout} from "store/auth/reducer";
+
+const HeaderRoot = styled(Container)`
+    border-bottom: 1px solid #2b3544;
+    background: rgba(15, 20, 27, 0.86);
+    backdrop-filter: blur(12px);
+`;
+
+const HeaderStack = styled('div')`
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+`;
+
+const HeaderBar = styled('div')`
+    display: flex;
+    align-items: center;
+    width: 100%;
+`;
+
+const HeaderSlot = styled('div')<{ align: 'flex-start' | 'center' | 'flex-end' }>`
+    flex: 1;
+    display: flex;
+    justify-content: ${(p) => p.align};
+`;
+
+const DonateLink = styled('a')`
+    color: #9aa4b2;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+        color: #eef2f7;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+`;
 
 const handleUpdate = async () => {
     if ('caches' in window) {
@@ -34,24 +72,24 @@ export const AppHeader = () => {
         await handleUpdate();
     };
 
-    return <Container className="header" padding='0.5em'>
-        <div style={{display: 'flex', flexDirection: 'column', gap: '0.25em'}}>
-            <div style={{display: 'flex', alignItems: 'center', width: '100%'}}>
-                <div style={{flex: 1, display: 'flex', justifyContent: 'flex-start'}}>
+    return <HeaderRoot className="header" padding='0.5em'>
+        <HeaderStack>
+            <HeaderBar>
+                <HeaderSlot align="flex-start">
                     <Tooltip title="Обновить приложение">
                         <IconButton onClick={onRefresh} disabled={refreshing} size="small">
                             <RefreshIcon style={{animation: refreshing ? 'spin 0.8s linear infinite' : undefined}}/>
                         </IconButton>
                     </Tooltip>
-                </div>
-                <div style={{flex: 1, display: 'flex', justifyContent: 'center'}}>
+                </HeaderSlot>
+                <HeaderSlot align="center">
                     <Tooltip title={soundEnabled ? "Звук: вкл" : "Звук: выкл"}>
                         <IconButton onClick={() => dispatch(toggleSound())} size="small">
                             {soundEnabled ? <VolumeUpIcon/> : <VolumeOffIcon/>}
                         </IconButton>
                     </Tooltip>
-                </div>
-                <div style={{flex: 1, display: 'flex', justifyContent: 'flex-end'}}>
+                </HeaderSlot>
+                <HeaderSlot align="flex-end">
                     {isUserLoggedIn && !isCheckingToken && user.user.id > 0 &&
                         <Tooltip title="Выйти">
                             <IconButton onClick={() => dispatch(logout())} size="small">
@@ -60,20 +98,13 @@ export const AppHeader = () => {
                         </Tooltip>
                     }
                     <AuthDebugButtons/>
-                </div>
-            </div>
+                </HeaderSlot>
+            </HeaderBar>
             <div style={{textAlign: 'center'}}>
-                <a href="https://tbank.ru/cf/8ccZXC5ZbA3" target="_blank"
-                   style={{
-                       textDecoration: 'none',
-                       color: '#ff3b6b',
-                       fontWeight: 600,
-                       fontSize: '0.9rem',
-                       letterSpacing: '0.01em',
-                   }}>
-                    ☕ Поблагодарить разработчика
-                </a>
+                <DonateLink href="https://tbank.ru/cf/8ccZXC5ZbA3" target="_blank">
+                    Поблагодарить разработчика
+                </DonateLink>
             </div>
-        </div>
-    </Container>
+        </HeaderStack>
+    </HeaderRoot>
 }
