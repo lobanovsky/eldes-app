@@ -63,9 +63,9 @@ jobs:
       - name: create env variables file for Docker
         run: |
           echo "TAG=${{ env.SHORT_SHA }}" > .env
-          echo "DOCKER_USERNAME=${{ env.DOCKER_USERNAME }}" >> .env
-          echo "VITE_BACKEND_URL=${{ env.VITE_BACKEND_URL }}" >> .env
-          echo "REACT_APP_BACKEND_URL=${{ env.REACT_APP_BACKEND_URL }}" >> .env
+          echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}" >> .env
+          echo "VITE_BACKEND_URL=${{ secrets.VITE_BACKEND_URL }}" >> .env
+          echo "REACT_APP_BACKEND_URL=${{ secrets.REACT_APP_BACKEND_URL }}" >> .env
 
       - name: copy files to host
         uses: appleboy/scp-action@v0.1.7
