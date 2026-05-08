@@ -29,10 +29,8 @@ const theme = createTheme({
 });
 
 const ViewContainer = styled(Container)`
-    flex: 1 0 auto;
-    //72px  высота хедера
-    // 56px высота футера
-    max-height: calc(100vh - 72px);
+    flex: 1 1 0;
+    min-height: 0;
     overflow-y: auto;
 `
 

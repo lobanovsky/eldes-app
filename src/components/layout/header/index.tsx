@@ -32,19 +32,22 @@ export const AppHeader = () => {
         await handleUpdate();
     };
 
-    return <Container className="header" style={{textAlign: 'end'}}>
-        <FlexBox flex-direction='row'>
-            <Tooltip title="Обновить приложение">
-                <IconButton onClick={onRefresh} disabled={refreshing} size="small">
-                    <RefreshIcon style={{animation: refreshing ? 'spin 0.8s linear infinite' : undefined}}/>
-                </IconButton>
-            </Tooltip>
-            <Tooltip title={soundEnabled ? "Звук: вкл" : "Звук: выкл"}>
-                <IconButton onClick={() => dispatch(toggleSound())} size="small">
-                    {soundEnabled ? <VolumeUpIcon/> : <VolumeOffIcon/>}
-                </IconButton>
-            </Tooltip>
-            <div style={{flex: '1 0 auto', textAlign: 'center'}}>
+    return <Container className="header" padding='0.5em'>
+        <FlexBox flex-direction='column' gap='0.25em'>
+            <FlexBox flex-direction='row' gap='0.5em' justify-content='flex-end'>
+                <Tooltip title="Обновить приложение">
+                    <IconButton onClick={onRefresh} disabled={refreshing} size="small">
+                        <RefreshIcon style={{animation: refreshing ? 'spin 0.8s linear infinite' : undefined}}/>
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title={soundEnabled ? "Звук: вкл" : "Звук: выкл"}>
+                    <IconButton onClick={() => dispatch(toggleSound())} size="small">
+                        {soundEnabled ? <VolumeUpIcon/> : <VolumeOffIcon/>}
+                    </IconButton>
+                </Tooltip>
+                <AuthDebugButtons/>
+            </FlexBox>
+            <div style={{textAlign: 'center'}}>
                 <a href="https://tbank.ru/cf/8ccZXC5ZbA3" target="_blank"
                    style={{
                        textDecoration: 'none',
@@ -56,7 +59,6 @@ export const AppHeader = () => {
                     ☕ Поблагодарить разработчика
                 </a>
             </div>
-            <AuthDebugButtons/>
         </FlexBox>
     </Container>
 }
