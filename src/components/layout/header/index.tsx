@@ -5,7 +5,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 import LogoutIcon from '@mui/icons-material/Logout';
-import {Container, FlexBox} from "../../styled";
+import {Container} from "../../styled";
 import {AuthDebugButtons} from "../../auth/DebugButtons";
 import {useSelector, useDispatch} from "react-redux";
 import {getSoundEnabled, getAuth} from "store/auth/selectors";
@@ -35,8 +35,8 @@ export const AppHeader = () => {
     };
 
     return <Container className="header" padding='0.5em'>
-        <FlexBox flex-direction='column' gap='0.25em'>
-            <div style={{display: 'flex', alignItems: 'center'}}>
+        <div style={{display: 'flex', flexDirection: 'column', gap: '0.25em'}}>
+            <div style={{display: 'flex', alignItems: 'center', width: '100%'}}>
                 <div style={{flex: 1, display: 'flex', justifyContent: 'flex-start'}}>
                     <Tooltip title="Обновить приложение">
                         <IconButton onClick={onRefresh} disabled={refreshing} size="small">
@@ -74,6 +74,6 @@ export const AppHeader = () => {
                     ☕ Поблагодарить разработчика
                 </a>
             </div>
-        </FlexBox>
+        </div>
     </Container>
 }
