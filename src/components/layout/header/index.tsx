@@ -4,11 +4,12 @@ import {IconButton, Tooltip} from "@mui/material";
 import RefreshIcon from '@mui/icons-material/Refresh';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import VolumeOffIcon from '@mui/icons-material/VolumeOff';
+import LogoutIcon from '@mui/icons-material/Logout';
 import {Container, FlexBox} from "../../styled";
 import {AuthDebugButtons} from "../../auth/DebugButtons";
 import {useSelector, useDispatch} from "react-redux";
-import {getSoundEnabled} from "store/auth/selectors";
-import {toggleSound} from "store/auth/reducer";
+import {getSoundEnabled, getAuth} from "store/auth/selectors";
+import {toggleSound, logout} from "store/auth/reducer";
 
 const handleUpdate = async () => {
     if ('caches' in window) {
@@ -25,6 +26,7 @@ const handleUpdate = async () => {
 export const AppHeader = () => {
     const [refreshing, setRefreshing] = useState(false);
     const soundEnabled = useSelector(getSoundEnabled);
+    const {isUserLoggedIn, isCheckingToken, user} = useSelector(getAuth);
     const dispatch = useDispatch();
 
     const onRefresh = async () => {
@@ -34,19 +36,32 @@ export const AppHeader = () => {
 
     return <Container className="header" padding='0.5em'>
         <FlexBox flex-direction='column' gap='0.25em'>
-            <FlexBox flex-direction='row' gap='0.5em' justify-content='flex-end'>
-                <Tooltip title="Обновить приложение">
-                    <IconButton onClick={onRefresh} disabled={refreshing} size="small">
-                        <RefreshIcon style={{animation: refreshing ? 'spin 0.8s linear infinite' : undefined}}/>
-                    </IconButton>
-                </Tooltip>
-                <Tooltip title={soundEnabled ? "Звук: вкл" : "Звук: выкл"}>
-                    <IconButton onClick={() => dispatch(toggleSound())} size="small">
-                        {soundEnabled ? <VolumeUpIcon/> : <VolumeOffIcon/>}
-                    </IconButton>
-                </Tooltip>
-                <AuthDebugButtons/>
-            </FlexBox>
+            <div style={{display: 'flex', alignItems: 'center'}}>
+                <div style={{flex: 1, display: 'flex', justifyContent: 'flex-start'}}>
+                    <Tooltip title="Обновить приложение">
+                        <IconButton onClick={onRefresh} disabled={refreshing} size="small">
+                            <RefreshIcon style={{animation: refreshing ? 'spin 0.8s linear infinite' : undefined}}/>
+                        </IconButton>
+                    </Tooltip>
+                </div>
+                <div style={{flex: 1, display: 'flex', justifyContent: 'center'}}>
+                    <Tooltip title={soundEnabled ? "Звук: вкл" : "Звук: выкл"}>
+                        <IconButton onClick={() => dispatch(toggleSound())} size="small">
+                            {soundEnabled ? <VolumeUpIcon/> : <VolumeOffIcon/>}
+                        </IconButton>
+                    </Tooltip>
+                </div>
+                <div style={{flex: 1, display: 'flex', justifyContent: 'flex-end'}}>
+                    {isUserLoggedIn && !isCheckingToken && user.user.id > 0 &&
+                        <Tooltip title="Выйти">
+                            <IconButton onClick={() => dispatch(logout())} size="small">
+                                <LogoutIcon/>
+                            </IconButton>
+                        </Tooltip>
+                    }
+                    <AuthDebugButtons/>
+                </div>
+            </div>
             <div style={{textAlign: 'center'}}>
                 <a href="https://tbank.ru/cf/8ccZXC5ZbA3" target="_blank"
                    style={{
