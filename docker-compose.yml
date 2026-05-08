@@ -1,19 +1,14 @@
 services:
 
   eldes-app:
-    build:
-      context: .
-      dockerfile: ${DOCKERFILE:-Dockerfile}
-    image: lobanovsky/eldes-app:${TAG}
+    image: ${DOCKER_USERNAME}/eldes-app:${TAG}
     container_name: eldes-app
     restart: always
-    volumes:
-      - ".:/usr/src/app"
-      - "/usr/src/app/node_modules"
-    ports:
-      - "8122:80"
+
     environment:
-      - BUILD_NUMBER=${TAG}
+      BUILD_NUMBER: ${TAG}
+      VITE_BACKEND_URL: ${VITE_BACKEND_URL}
+      REACT_APP_BACKEND_URL: ${REACT_APP_BACKEND_URL}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.gate.rule=Host(`gate.housekpr.ru`)"

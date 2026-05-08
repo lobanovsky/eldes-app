@@ -1,7 +1,7 @@
 import axios from "axios";
 import {logout} from "../store/auth/reducer";
 
-axios.defaults.baseURL = process.env.REACT_APP_BACKEND_URL;
+axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL ?? import.meta.env.REACT_APP_BACKEND_URL;
 
 export const axiosNotAuthorizedInterceptor = (error: any, dispatch: any) => {
     // Reject promise if usual error

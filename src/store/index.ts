@@ -17,7 +17,7 @@ const appStore = configureStore({
     auth: persistedAuthReducer
   },
   middleware: storeMiddleware,
-  devTools: process.env.NODE_ENV !== 'production'
+  devTools: import.meta.env.DEV
 });
 
 export type StoreState = ReturnType<typeof appStore.getState>;
