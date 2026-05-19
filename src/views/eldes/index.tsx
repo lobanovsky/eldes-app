@@ -108,7 +108,7 @@ export const EldesController = () => {
     return (
         // <div>
         // @ts-ignore
-        <FlexBox flex-direction='column' justify-content='center' className='eldes view' style={{minHeight: 'calc(100% - 1em)', paddingBottom: '1em', boxSizing: 'border-box'}} gap={'24px'}>
+        <FlexBox flex-direction='column' justify-content='center' className='eldes view' style={{minHeight: 'calc(100% - 1em)', paddingBottom: '1em', boxSizing: 'border-box'}} gap={'40px'}>
             {loading && <Loading text='Загружаем шлагбаумы'/>}
             {data.zones.map((zone) =>
                 <ZoneCard variant='outlined' key={zone.id}>
