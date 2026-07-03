@@ -1,13 +1,15 @@
 import {useCallback, useEffect, useState} from "react";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import styled from 'styled-components';
-import { Card, CardContent, Typography} from "@mui/material";
+import { Card, CardContent, Typography, IconButton, CircularProgress} from "@mui/material";
+import RefreshIcon from '@mui/icons-material/Refresh';
 import {UserDevices, getDevices} from "./services";
 import {GateOpenButton} from "./open-button";
 import {Loading} from "components/loading";
 import {FlexBox} from "components/styled";
 import {useNotifications} from "hooks";
-import {getAuth} from "store/auth/selectors";
+import {getAuth, getLastDevices} from "store/auth/selectors";
+import {setDevices} from "store/auth/reducer";
 
 
 
@@ -20,6 +22,14 @@ const ZoneCard = styled(Card)`
     background-color: #161d27 !important;
     border: 1px solid #2b3544 !important;
     box-shadow: 0 18px 44px rgba(0, 0, 0, 0.32) !important;
+`
+
+const RefreshBar = styled.div`
+    width: 100%;
+    max-width: 460px;
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: -20px;
 `
 
 const ZoneHeader = styled.div`
@@ -77,24 +87,37 @@ const getZoneIcon = (zoneName: string) => {
 export const EldesController = () => {
     //так делать некрасиво, но пока лень
     const {user} = useSelector(getAuth);
+    const lastDevices = useSelector(getLastDevices);
+    const dispatch = useDispatch();
     const notificationsApi = useNotifications();
-    const [data, setData] = useState<UserDevices>({
+    // Инициализируем из персиста — список показывается мгновенно (stale-while-revalidate)
+    const [data, setData] = useState<UserDevices>(lastDevices ?? {
         userId: '',
         zones: []
     });
 
+    // Полноэкранный оверлей — только при первом заходе, когда кэша ещё нет.
     const [loading, setLoading] = useState(false);
+    // Фоновое/ручное обновление при уже показанном списке — маленький инлайновый спиннер.
+    const [refreshing, setRefreshing] = useState(false);
 
-    const loadDevices = useCallback(() => {
-        setLoading(true);
+    const loadDevices = useCallback((forceRefresh = false) => {
+        const hasCache = !!(lastDevices?.zones?.length);
+        if (hasCache) {
+            setRefreshing(true);
+        } else {
+            setLoading(true);
+        }
         getDevices(user.user.id, notificationsApi, (isSuccess, loadedMap) => {
             setLoading(false);
+            setRefreshing(false);
             if (isSuccess && loadedMap?.zones?.length) {
                 setData(loadedMap);
+                dispatch(setDevices(loadedMap));
             }
 
-        })
-    }, []);
+        }, forceRefresh)
+    }, [lastDevices, user.user.id, notificationsApi, dispatch]);
 
     useEffect(() => {
         if (user.token) {
@@ -110,6 +133,18 @@ export const EldesController = () => {
         // @ts-ignore
         <FlexBox flex-direction='column' justify-content='center' className='eldes view' style={{minHeight: 'calc(100% - 1em)', paddingBottom: '1em', boxSizing: 'border-box'}} gap={'40px'}>
             {loading && <Loading text='Загружаем шлагбаумы'/>}
+            <RefreshBar>
+                <IconButton
+                    size='small'
+                    onClick={() => loadDevices(true)}
+                    disabled={refreshing || loading}
+                    aria-label='Обновить список шлагбаумов'
+                    title='Обновить список'
+                    style={{color: '#bac9e2'}}
+                >
+                    {refreshing ? <CircularProgress size={18} style={{color: '#bac9e2'}}/> : <RefreshIcon fontSize='small'/>}
+                </IconButton>
+            </RefreshBar>
             {data.zones.map((zone) =>
                 <ZoneCard variant='outlined' key={zone.id}>
                     <CardContent>

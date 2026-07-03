@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {LoginData, UserInfo} from 'utils/types';
+import type {UserDevices} from 'views/eldes/services';
 
 export const EMPTY_USER_DATA: UserInfo = {
     id: 0,
@@ -22,6 +23,7 @@ export interface AuthStoreState {
     isLoggingIn: boolean,
     isUserLoggedIn: boolean,
     soundEnabled: boolean,
+    lastDevices: UserDevices | null,
 }
 
 const authSlice = createSlice({
@@ -35,6 +37,7 @@ const authSlice = createSlice({
         isLoggingIn: false,
         isUserLoggedIn: false,
         soundEnabled: true,
+        lastDevices: null,
     },
     reducers: {
         loginStarted: (state: AuthStoreState) => {
@@ -56,6 +59,7 @@ const authSlice = createSlice({
             state.isUserLoggedIn = false;
             state.isCheckingToken = false;
             state.user = EMPTY_USER;
+            state.lastDevices = null;
         },
         loginPasswordGenerated: (state: AuthStoreState,{ payload }: PayloadAction<{password: string, email: string}>) => {
             state.user.loginPassword = payload.password;
@@ -68,6 +72,9 @@ const authSlice = createSlice({
         toggleSound: (state: AuthStoreState) => {
             state.soundEnabled = !state.soundEnabled;
         },
+        setDevices: (state: AuthStoreState, { payload }: PayloadAction<UserDevices>) => {
+            state.lastDevices = payload;
+        },
     }
 });
 
@@ -79,6 +86,7 @@ export const {
     loginPasswordGenerated,
     platformChanged,
     toggleSound,
+    setDevices,
 } = authSlice.actions;
 
 // @ts-ignore

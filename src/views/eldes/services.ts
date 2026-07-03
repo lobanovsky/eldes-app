@@ -46,8 +46,8 @@ const saveUserPlatform = (userId: number, platform: UserPlatform) => {
 
 
 
-export const getDevices = (userId: number,{showError}: NotificationsHookResult, onFinish: ActionCallbackWithData<UserDevices>) => {
-    axios.get('/api/private/devices')
+export const getDevices = (userId: number,{showError}: NotificationsHookResult, onFinish: ActionCallbackWithData<UserDevices>, forceRefresh = false) => {
+    axios.get(forceRefresh ? '/api/private/devices?refresh=true' : '/api/private/devices')
         .then(({data = {zones: []}}) => {
             onFinish(true, (data || {zones: []}) as UserDevices);
             const userOS = getMobileOperatingSystem();

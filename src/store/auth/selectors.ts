@@ -1,8 +1,10 @@
 import { StoreState } from '../index';
 import {AuthStoreState} from "./reducer";
+import type {UserDevices} from "views/eldes/services";
 
 
 export const getAuth = ({ auth }: StoreState):AuthStoreState => auth;
 export const getIsLoggingIn = ({ auth }: StoreState):boolean => auth.isLoggingIn;
 export const getUser = (state: StoreState) => state.auth.user;
 export const getSoundEnabled = ({ auth }: StoreState): boolean => auth.soundEnabled ?? true;
+export const getLastDevices = ({ auth }: StoreState): UserDevices | null => (auth as AuthStoreState).lastDevices ?? null;

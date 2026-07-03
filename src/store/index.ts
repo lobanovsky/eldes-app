@@ -7,7 +7,7 @@ import { storeMiddleware } from './middleware';
 const persistConfig = {
   key: 'eldes',
   storage,
-  whitelist: ['user', 'isUserLoggedIn', 'soundEnabled']
+  whitelist: ['user', 'isUserLoggedIn', 'soundEnabled', 'lastDevices']
 };
 
 const persistedAuthReducer = persistReducer(persistConfig, authSlice);
