@@ -1,11 +1,14 @@
 
 import React, {useState} from "react";
-import {IconButton, Tooltip} from "@mui/material";
+import {Box, Button, Dialog, DialogContent, DialogTitle, IconButton, Tooltip, Typography} from "@mui/material";
 import {styled} from "@mui/material/styles";
 import RefreshIcon from '@mui/icons-material/Refresh';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 import LogoutIcon from '@mui/icons-material/Logout';
+import CloseIcon from '@mui/icons-material/Close';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import CheckIcon from '@mui/icons-material/Check';
 import {Container} from "../../styled";
 import {AuthDebugButtons} from "../../auth/DebugButtons";
 import {useSelector, useDispatch} from "react-redux";
@@ -38,7 +41,12 @@ const HeaderSlot = styled('div')<{ align: 'flex-start' | 'center' | 'flex-end' }
     justify-content: ${(p) => p.align};
 `;
 
-const DonateLink = styled('a')`
+const DonateLink = styled('button')`
+    border: 0;
+    padding: 4px 8px;
+    background: transparent;
+    cursor: pointer;
+    font-family: inherit;
     color: #64748b;
     font-size: 0.82rem;
     font-weight: 600;
@@ -65,6 +73,26 @@ const handleUpdate = async () => {
 
 export const AppHeader = () => {
     const [refreshing, setRefreshing] = useState(false);
+    const [donateOpen, setDonateOpen] = useState(false);
+    const [copied, setCopied] = useState(false);
+    const [copyError, setCopyError] = useState(false);
+
+    const openDonate = () => {
+        setCopied(false);
+        setCopyError(false);
+        setDonateOpen(true);
+    };
+
+    const copyPhone = async () => {
+        try {
+            await navigator.clipboard.writeText('+79267936363');
+            setCopied(true);
+            setCopyError(false);
+        } catch {
+            setCopied(false);
+            setCopyError(true);
+        }
+    };
     const soundEnabled = useSelector(getSoundEnabled);
     const {isUserLoggedIn, isCheckingToken, user} = useSelector(getAuth);
     const dispatch = useDispatch();
@@ -103,10 +131,53 @@ export const AppHeader = () => {
                 </HeaderSlot>
             </HeaderBar>
             <div style={{textAlign: 'center'}}>
-                <DonateLink href="https://t.tb.ru/pm_short/8ccZXC5ZbA3" target="_blank">
+                <DonateLink type="button" onClick={openDonate}>
                     Поблагодарить разработчика
                 </DonateLink>
             </div>
         </HeaderStack>
+        <Dialog
+            open={donateOpen}
+            onClose={() => setDonateOpen(false)}
+            fullWidth
+            maxWidth="xs"
+            aria-labelledby="donate-title"
+            aria-describedby="donate-description"
+            slotProps={{paper: {sx: {borderRadius: '20px', m: 2, width: 'calc(100% - 32px)'}}}}
+        >
+            <DialogTitle id="donate-title" sx={{pr: 7, fontSize: '1.15rem', fontWeight: 700}}>
+                Поблагодарить разработчика
+            </DialogTitle>
+            <IconButton
+                aria-label="Закрыть"
+                onClick={() => setDonateOpen(false)}
+                sx={{position: 'absolute', right: 12, top: 12}}
+            >
+                <CloseIcon/>
+            </IconButton>
+            <DialogContent sx={{pb: 3}}>
+                <Typography id="donate-description" color="text.secondary" sx={{mb: 3}}>
+                    Перевод любой суммы на Сбер или Т-Банк
+                </Typography>
+                <Box sx={{p: 2.5, mb: 3, borderRadius: '12px', bgcolor: 'background.default', textAlign: 'center'}}>
+                    <Typography sx={{fontSize: {xs: '1.35rem', sm: '1.5rem'}, fontWeight: 700, userSelect: 'text', whiteSpace: 'nowrap'}}>
+                        +7-926-793-63-63
+                    </Typography>
+                    <Typography color="text.secondary" sx={{mt: 0.75}}>
+                        Евгений Л.
+                    </Typography>
+                </Box>
+                <Button fullWidth variant="contained" size="large" onClick={copyPhone}
+                        startIcon={copied ? <CheckIcon/> : <ContentCopyIcon/>}
+                        sx={{minHeight: 52}}>
+                    Копировать номер телефона
+                </Button>
+                <Box role="status" aria-live="polite" sx={{mt: 1.5, minHeight: 20, textAlign: 'center'}}>
+                    <Typography variant="body2" color={copyError ? 'error' : 'text.secondary'}>
+                        {copied ? 'Номер скопирован' : copyError ? 'Не удалось скопировать. Выделите номер и скопируйте вручную.' : 'Спасибо за поддержку!'}
+                    </Typography>
+                </Box>
+            </DialogContent>
+        </Dialog>
     </HeaderRoot>
 }
