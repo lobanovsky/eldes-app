@@ -71,6 +71,7 @@ jobs:
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.MR17_HOST_IP }}
+          port: 2222
           username: ${{ secrets.MR17_HOST_USERNAME }}
           key: ${{ secrets.MR17_HOST_KEY }}
           source: ".env, docker-compose.yml"
@@ -80,6 +81,7 @@ jobs:
         uses: appleboy/ssh-action@v1.2.2
         with:
           host: ${{ secrets.MR17_HOST_IP }}
+          port: 2222
           username: ${{ secrets.MR17_HOST_USERNAME }}
           key: ${{ secrets.MR17_HOST_KEY }}
           script: |
