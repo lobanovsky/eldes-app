@@ -11,7 +11,7 @@ const LoadingMask = styled.div`
     top: 0;
     left: 0;
     z-index: 10;
-    background-color: rgba(200, 200, 200, 0.4);
+    background-color: rgba(244, 246, 250, 0.82);
 `
 
 export const Loading = ({text = ''}: { text?: string }) =>

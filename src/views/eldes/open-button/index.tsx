@@ -28,23 +28,24 @@ const StyledLink = styled.a<{ accent?: string }>`
     width: 62px;
     height: 70px;
     min-width: 62px;
-    color: #e8eef8;
-    border-radius: 8px;
-    font-size: 22px;
+    color: #3568ad;
+    border-radius: 12px;
+    font-size: 20px;
+    transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
     text-transform: none !important;
-    background-color: #1b2430;
-    border: 1px solid #2b3544;
+    background-color: #f3f6fb;
+    border: 1px solid #dfe7f1;
     border-left: 5px solid ${(p: any) => getAccentColor(p.accent)};
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+    box-shadow: 0 2px 6px rgba(35, 50, 71, 0.03);
     display: flex;
     align-items: center;
     justify-content: center;
 
     &:hover {
-        background-color: #222d3b;
-        border-color: #3a4658;
+        background-color: #eaf0f9;
+        border-color: #bdcde2;
         border-left-color: ${(p: any) => getAccentColor(p.accent)};
-        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.34);
+        box-shadow: 0 4px 12px rgba(35, 50, 71, 0.07);
     }
 `;
 
@@ -54,14 +55,15 @@ const StyledButton = styledMui(Button, {
 
     width: 100%;
     min-height: 70px;
-    color: #eef2f7;
-    font-size: 22px;
+    color: #233247;
+    font-size: 20px;
     font-weight: 700;
+    transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
     text-transform: none !important;
-    background-color: ${(p: any) => p.activating ? '#2b2112' : '#1b2430'};
-    border: 1px solid ${(p: any) => p.activating ? '#9a6a26' : '#2b3544'};
-    border-left: 5px solid ${(p: any) => p.activating ? '#d89a35' : getAccentColor(p.accent)};
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+    background-color: ${(p: any) => p.activating ? '#fff5df' : '#f3f6fb'};
+    border: 1px solid ${(p: any) => p.activating ? '#e4c78d' : '#dfe7f1'};
+    border-left: 5px solid ${(p: any) => p.activating ? '#946013' : getAccentColor(p.accent)};
+    box-shadow: 0 2px 6px rgba(35, 50, 71, 0.03);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -74,23 +76,23 @@ const StyledButton = styledMui(Button, {
 
     &.open-delayed {
         &:disabled {
-            color: #d89a35;
+            color: #946013;
         }
 
     }
 
     &:hover {
-        background-color: ${(p: any) => p.activating ? '#2b2112' : '#222d3b'};
-        border-color: ${(p: any) => p.activating ? '#9a6a26' : '#3a4658'};
-        border-left-color: ${(p: any) => p.activating ? '#d89a35' : getAccentColor(p.accent)};
-        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.34);
+        background-color: ${(p: any) => p.activating ? '#fff5df' : '#eaf0f9'};
+        border-color: ${(p: any) => p.activating ? '#e4c78d' : '#bdcde2'};
+        border-left-color: ${(p: any) => p.activating ? '#946013' : getAccentColor(p.accent)};
+        box-shadow: 0 4px 12px rgba(35, 50, 71, 0.07);
     }
 
     &.Mui-disabled {
-        color: ${(p: any) => p.activating ? '#d89a35' : '#8792a3'};
-        background-color: ${(p: any) => p.activating ? '#2b2112' : '#151c25'};
-        border-color: ${(p: any) => p.activating ? '#9a6a26' : '#2b3544'};
-        border-left-color: ${(p: any) => p.activating ? '#d89a35' : getAccentColor(p.accent)};
+        color: ${(p: any) => p.activating ? '#946013' : '#718096'};
+        background-color: ${(p: any) => p.activating ? '#fff5df' : '#eef1f5'};
+        border-color: ${(p: any) => p.activating ? '#e4c78d' : '#dfe7f1'};
+        border-left-color: ${(p: any) => p.activating ? '#946013' : getAccentColor(p.accent)};
         opacity: 1;
     }
 `
@@ -110,7 +112,8 @@ const ButtonContent = styled.span`
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 8px;
+    gap: 10px;
+    padding-right: 12px;
     min-width: 0;
     width: 100%;
     text-align: left;
@@ -255,7 +258,7 @@ export const GateOpenButton = ({userId, device, zoneName, loadDevices}: GateOpen
         </ButtonContent>
         <ArrowCircle>
             {isActivating
-                ? <CircularProgress size={20} style={{color: '#d89a35'}}/>
+                ? <CircularProgress size={20} style={{color: '#946013'}}/>
                 : <ArrowForwardIcon style={{transform: `rotate(${arrowDeg}deg)`, fontSize: '20px'}}/>
             }
         </ArrowCircle>
@@ -264,7 +267,7 @@ export const GateOpenButton = ({userId, device, zoneName, loadDevices}: GateOpen
     return <GateComposedButton>
         <>
             {!!device?.phoneNumber &&
-                <StyledLink accent={accentColor} href={`tel:+${device.phoneNumber}`} role='link'>
+                <StyledLink aria-label={`Открыть звонком: ${device.label || device.name}`} accent={accentColor} href={`tel:+${device.phoneNumber}`} role='link'>
                     <PhoneIcon style={{fontSize: '32px'}}/>
                 </StyledLink>
             }

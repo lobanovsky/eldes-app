@@ -18,28 +18,28 @@ import {IS_DEBUG} from "utils/constants";
 
 const theme = createTheme({
     palette: {
-        mode: 'dark',
+        mode: 'light',
         primary: {
-            main: '#8ea4c8',
-            dark: '#61799f',
-            light: '#bac9e2',
+            main: '#3568ad',
+            dark: '#254e85',
+            light: '#eaf1fb',
             contrastText: '#ffffff',
         },
         secondary: {
-            main: '#9aa4b2',
+            main: '#64748b',
         },
         background: {
-            default: '#0f141b',
-            paper: '#161d27',
+            default: '#f4f6fa',
+            paper: '#ffffff',
         },
         text: {
-            primary: '#eef2f7',
-            secondary: '#9aa4b2',
+            primary: '#233247',
+            secondary: '#64748b',
         },
-        divider: '#2b3544',
+        divider: '#e2e8f0',
     },
     shape: {
-        borderRadius: 8,
+        borderRadius: 12,
     },
     typography: {
         fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
@@ -52,7 +52,7 @@ const theme = createTheme({
         MuiButton: {
             styleOverrides: {
                 root: {
-                    borderRadius: 8,
+                    borderRadius: 12,
                     boxShadow: 'none',
                 },
                 contained: {
@@ -66,19 +66,20 @@ const theme = createTheme({
         MuiCard: {
             styleOverrides: {
                 root: {
-                    borderRadius: 10,
+                    borderRadius: 20,
                     backgroundImage: 'none',
-                    boxShadow: '0 18px 44px rgba(0, 0, 0, 0.32)',
+                    border: '1px solid #e2e8f0',
+                    boxShadow: '0 8px 32px rgba(35, 50, 71, 0.05)',
                 },
             },
         },
         MuiIconButton: {
             styleOverrides: {
                 root: {
-                    color: '#d7deea',
-                    borderRadius: 8,
+                    color: '#52647c',
+                    borderRadius: 12,
                     '&:hover': {
-                        backgroundColor: 'rgba(142, 164, 200, 0.12)',
+                        backgroundColor: 'rgba(53, 104, 173, 0.08)',
                     },
                 },
             },
@@ -87,7 +88,7 @@ const theme = createTheme({
             styleOverrides: {
                 root: {
                     '& .MuiOutlinedInput-root': {
-                        backgroundColor: '#111821',
+                        backgroundColor: '#f8fafc',
                     },
                 },
             },
@@ -103,6 +104,7 @@ const ViewContainer = styled(Container)`
 
 const Layout = styled(FlexBox)`
     height: 100vh;
+    height: 100dvh;
     justify-content: flex-start;
     gap: 0;
     flex-direction: column;

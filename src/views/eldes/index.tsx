@@ -15,13 +15,13 @@ import {setDevices} from "store/auth/reducer";
 
 
 const ZoneCard = styled(Card)`
-    min-width: 300px;
+    min-width: 0;
     max-width: 460px;
     padding: 0.25em 0;
     width: 100%;
-    background-color: #161d27 !important;
-    border: 1px solid #2b3544 !important;
-    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.32) !important;
+    background-color: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 8px 32px rgba(35, 50, 71, 0.05) !important;
 `
 
 const RefreshBar = styled.div`
@@ -29,7 +29,7 @@ const RefreshBar = styled.div`
     max-width: 460px;
     display: flex;
     justify-content: flex-end;
-    margin-bottom: -20px;
+    margin-bottom: -8px;
 `
 
 const ZoneHeader = styled.div`
@@ -41,12 +41,12 @@ const ZoneHeader = styled.div`
 `
 
 const ZoneIconBox = styled.div`
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    border: 1px solid #2b3544;
-    background: #1b2430;
-    color: #bac9e2;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    background: #f0f4fa;
+    color: #526b8d;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -55,7 +55,7 @@ const ZoneIconBox = styled.div`
 
 const BarrierIcon = () => (
     <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <rect x="5" y="13" width="3" height="7" rx="1" fill="#e8eef8"/>
+        <rect x="5" y="13" width="3" height="7" rx="1" fill="#64748b"/>
         <rect x="4" y="19" width="6" height="2" rx="1" fill="#8792a3"/>
         <g transform="rotate(-18 12 10)">
             <rect x="3" y="8" width="18" height="4" rx="1.5" fill="#f8fafc"/>
@@ -131,7 +131,7 @@ export const EldesController = () => {
     return (
         // <div>
         // @ts-ignore
-        <FlexBox flex-direction='column' justify-content='center' className='eldes view' style={{minHeight: 'calc(100% - 1em)', paddingBottom: '1em', boxSizing: 'border-box'}} gap={'40px'}>
+        <FlexBox flex-direction='column' justify-content='center' className='eldes view' style={{minHeight: 'calc(100% - 1em)', paddingBottom: '1em', boxSizing: 'border-box'}} gap={'24px'}>
             {loading && <Loading text='Загружаем шлагбаумы'/>}
             <RefreshBar>
                 <IconButton
@@ -140,9 +140,9 @@ export const EldesController = () => {
                     disabled={refreshing || loading}
                     aria-label='Обновить список шлагбаумов'
                     title='Обновить список'
-                    style={{color: '#bac9e2'}}
+                    style={{color: '#526b8d'}}
                 >
-                    {refreshing ? <CircularProgress size={18} style={{color: '#bac9e2'}}/> : <RefreshIcon fontSize='small'/>}
+                    {refreshing ? <CircularProgress size={18} style={{color: '#526b8d'}}/> : <RefreshIcon fontSize='small'/>}
                 </IconButton>
             </RefreshBar>
             {data.zones.map((zone) =>
@@ -155,7 +155,7 @@ export const EldesController = () => {
                                     <ZoneIcon/>
                                 </ZoneIconBox>
                             })()}
-                            <Typography variant="subtitle1" component="div" style={{fontWeight: 700, color: '#eef2f7'}}>
+                            <Typography variant="subtitle1" component="div" style={{fontWeight: 700, color: '#233247'}}>
                                 {zone.name}
                             </Typography>
                         </ZoneHeader>

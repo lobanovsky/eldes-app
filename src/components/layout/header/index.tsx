@@ -13,8 +13,10 @@ import {getSoundEnabled, getAuth} from "store/auth/selectors";
 import {toggleSound, logout} from "store/auth/reducer";
 
 const HeaderRoot = styled(Container)`
-    border-bottom: 1px solid #2b3544;
-    background: rgba(15, 20, 27, 0.86);
+    flex-shrink: 0;
+    padding-top: max(8px, env(safe-area-inset-top));
+    border-bottom: 1px solid #e2e8f0;
+    background: rgba(255, 255, 255, 0.92);
     backdrop-filter: blur(12px);
 `;
 
@@ -37,13 +39,13 @@ const HeaderSlot = styled('div')<{ align: 'flex-start' | 'center' | 'flex-end' }
 `;
 
 const DonateLink = styled('a')`
-    color: #9aa4b2;
+    color: #64748b;
     font-size: 0.82rem;
     font-weight: 600;
     text-decoration: none;
 
     &:hover {
-        color: #eef2f7;
+        color: #3568ad;
         text-decoration: underline;
         text-underline-offset: 3px;
     }
@@ -77,14 +79,14 @@ export const AppHeader = () => {
             <HeaderBar>
                 <HeaderSlot align="flex-start">
                     <Tooltip title="Обновить приложение">
-                        <IconButton onClick={onRefresh} disabled={refreshing} size="small">
+                        <IconButton aria-label="Обновить приложение" onClick={onRefresh} disabled={refreshing} size="small">
                             <RefreshIcon style={{animation: refreshing ? 'spin 0.8s linear infinite' : undefined}}/>
                         </IconButton>
                     </Tooltip>
                 </HeaderSlot>
                 <HeaderSlot align="center">
                     <Tooltip title={soundEnabled ? "Звук: вкл" : "Звук: выкл"}>
-                        <IconButton onClick={() => dispatch(toggleSound())} size="small">
+                        <IconButton aria-label={soundEnabled ? "Выключить звук" : "Включить звук"} aria-pressed={soundEnabled} onClick={() => dispatch(toggleSound())} size="small">
                             {soundEnabled ? <VolumeUpIcon/> : <VolumeOffIcon/>}
                         </IconButton>
                     </Tooltip>
@@ -92,7 +94,7 @@ export const AppHeader = () => {
                 <HeaderSlot align="flex-end">
                     {isUserLoggedIn && !isCheckingToken && user.user.id > 0 &&
                         <Tooltip title="Выйти">
-                            <IconButton onClick={() => dispatch(logout())} size="small">
+                            <IconButton aria-label="Выйти" onClick={() => dispatch(logout())} size="small">
                                 <LogoutIcon/>
                             </IconButton>
                         </Tooltip>
