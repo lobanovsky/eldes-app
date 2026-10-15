@@ -101,7 +101,7 @@ export const AppHeader = () => {
                 </HeaderSlot>
             </HeaderBar>
             <div style={{textAlign: 'center'}}>
-                <DonateLink href="https://tbank.ru/cf/8ccZXC5ZbA3" target="_blank">
+                <DonateLink href="https://t.tb.ru/pm_short/8ccZXC5ZbA3" target="_blank">
                     Поблагодарить разработчика
                 </DonateLink>
             </div>
