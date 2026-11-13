@@ -18,8 +18,8 @@ const ZoneCard = styled(Card)`
     max-width: 460px;
     padding: 0.25em 0;
     width: 100%;
-    background-color: #ffffff !important;
-    border: 1px solid #e2e8f0 !important;
+    background-color: var(--surface) !important;
+    border: 1px solid var(--border) !important;
     box-shadow: 0 8px 32px rgba(35, 50, 71, 0.05) !important;
 `
 
@@ -35,9 +35,9 @@ const ZoneIconBox = styled.div`
     width: 40px;
     height: 40px;
     border-radius: 12px;
-    border: 1px solid #e2e8f0;
-    background: #f0f4fa;
-    color: #526b8d;
+    border: 1px solid var(--border);
+    background: var(--button);
+    color: var(--secondary);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -129,7 +129,7 @@ export const EldesController = () => {
                                     <ZoneIcon/>
                                 </ZoneIconBox>
                             })()}
-                            <Typography variant="subtitle1" component="div" style={{fontWeight: 700, color: '#233247'}}>
+                            <Typography variant="h5" component="h2" style={{fontSize: '28px', fontWeight: 800, color: 'var(--text)'}}>
                                 {zone.name}
                             </Typography>
                         </ZoneHeader>

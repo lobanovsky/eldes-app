@@ -2,6 +2,8 @@
 import React, {useState} from "react";
 import {Box, Button, Dialog, DialogContent, DialogTitle, IconButton, Tooltip, Typography} from "@mui/material";
 import {styled} from "@mui/material/styles";
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import VolumeOffIcon from '@mui/icons-material/VolumeOff';
@@ -18,8 +20,8 @@ import {toggleSound, logout} from "store/auth/reducer";
 const HeaderRoot = styled(Container)`
     flex-shrink: 0;
     padding-top: max(8px, env(safe-area-inset-top));
-    border-bottom: 1px solid #e2e8f0;
-    background: rgba(255, 255, 255, 0.92);
+    border-bottom: 1px solid var(--border);
+    background: var(--header);
     backdrop-filter: blur(12px);
 `;
 
@@ -47,13 +49,13 @@ const DonateLink = styled('button')`
     background: transparent;
     cursor: pointer;
     font-family: inherit;
-    color: #64748b;
+    color: var(--secondary);
     font-size: 0.82rem;
     font-weight: 600;
     text-decoration: none;
 
     &:hover {
-        color: #3568ad;
+        color: var(--link);
         text-decoration: underline;
         text-underline-offset: 3px;
     }
@@ -71,7 +73,7 @@ const handleUpdate = async () => {
     window.location.reload();
 };
 
-export const AppHeader = () => {
+export const AppHeader = ({dark, onToggleTheme}: {dark: boolean; onToggleTheme: () => void}) => {
     const [refreshing, setRefreshing] = useState(false);
     const [donateOpen, setDonateOpen] = useState(false);
     const [copied, setCopied] = useState(false);
@@ -113,6 +115,11 @@ export const AppHeader = () => {
                     </Tooltip>
                 </HeaderSlot>
                 <HeaderSlot align="center">
+                    <Tooltip title={dark ? 'Включить светлую тему' : 'Включить тёмную тему'}>
+                        <IconButton aria-label={dark ? 'Включить светлую тему' : 'Включить тёмную тему'} aria-pressed={dark} onClick={onToggleTheme} size="small">
+                            {dark ? <LightModeIcon/> : <DarkModeIcon/>}
+                        </IconButton>
+                    </Tooltip>
                     <Tooltip title={soundEnabled ? "Звук: вкл" : "Звук: выкл"}>
                         <IconButton aria-label={soundEnabled ? "Выключить звук" : "Включить звук"} aria-pressed={soundEnabled} onClick={() => dispatch(toggleSound())} size="small">
                             {soundEnabled ? <VolumeUpIcon/> : <VolumeOffIcon/>}

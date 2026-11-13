@@ -22,19 +22,19 @@ interface GateOpenProps {
 const PARKING_GATE_DELAY_SECONDS = 45;
 const ACTIVATING_FEEDBACK_MS = 2000;
 
-const getAccentColor = (color?: string) => color || '#64748b';
+const getAccentColor = (color?: string) => color || 'var(--secondary)';
 
 const StyledLink = styled.a<{ accent?: string }>`
     width: 62px;
     height: 70px;
     min-width: 62px;
-    color: #3568ad;
+    color: var(--link);
     border-radius: 12px;
     font-size: 20px;
     transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
     text-transform: none !important;
-    background-color: #f3f6fb;
-    border: 1px solid #dfe7f1;
+    background-color: var(--button);
+    border: 1px solid var(--border);
     border-left: 5px solid ${(p: any) => getAccentColor(p.accent)};
     box-shadow: 0 2px 6px rgba(35, 50, 71, 0.03);
     display: flex;
@@ -42,8 +42,8 @@ const StyledLink = styled.a<{ accent?: string }>`
     justify-content: center;
 
     &:hover {
-        background-color: #eaf0f9;
-        border-color: #bdcde2;
+        background-color: var(--hover);
+        border-color: var(--hover-border);
         border-left-color: ${(p: any) => getAccentColor(p.accent)};
         box-shadow: 0 4px 12px rgba(35, 50, 71, 0.07);
     }
@@ -55,14 +55,14 @@ const StyledButton = styledMui(Button, {
 
     width: 100%;
     min-height: 70px;
-    color: #233247;
+    color: var(--text);
     font-size: 20px;
     font-weight: 700;
     transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
     text-transform: none !important;
-    background-color: ${(p: any) => p.activating ? '#fff5df' : '#f3f6fb'};
-    border: 1px solid ${(p: any) => p.activating ? '#e4c78d' : '#dfe7f1'};
-    border-left: 5px solid ${(p: any) => p.activating ? '#946013' : getAccentColor(p.accent)};
+    background-color: ${(p: any) => p.activating ? 'var(--active)' : 'var(--button)'};
+    border: 1px solid ${(p: any) => p.activating ? 'var(--active-border)' : 'var(--border)'};
+    border-left: 5px solid ${(p: any) => p.activating ? 'var(--active-text)' : getAccentColor(p.accent)};
     box-shadow: 0 2px 6px rgba(35, 50, 71, 0.03);
     display: flex;
     justify-content: space-between;
@@ -76,23 +76,23 @@ const StyledButton = styledMui(Button, {
 
     &.open-delayed {
         &:disabled {
-            color: #946013;
+            color: var(--active-text);
         }
 
     }
 
     &:hover {
-        background-color: ${(p: any) => p.activating ? '#fff5df' : '#eaf0f9'};
-        border-color: ${(p: any) => p.activating ? '#e4c78d' : '#bdcde2'};
-        border-left-color: ${(p: any) => p.activating ? '#946013' : getAccentColor(p.accent)};
+        background-color: ${(p: any) => p.activating ? 'var(--active)' : 'var(--hover)'};
+        border-color: ${(p: any) => p.activating ? 'var(--active-border)' : 'var(--hover-border)'};
+        border-left-color: ${(p: any) => p.activating ? 'var(--active-text)' : getAccentColor(p.accent)};
         box-shadow: 0 4px 12px rgba(35, 50, 71, 0.07);
     }
 
     &.Mui-disabled {
-        color: ${(p: any) => p.activating ? '#946013' : '#718096'};
-        background-color: ${(p: any) => p.activating ? '#fff5df' : '#eef1f5'};
-        border-color: ${(p: any) => p.activating ? '#e4c78d' : '#dfe7f1'};
-        border-left-color: ${(p: any) => p.activating ? '#946013' : getAccentColor(p.accent)};
+        color: ${(p: any) => p.activating ? 'var(--active-text)' : 'var(--secondary)'};
+        background-color: ${(p: any) => p.activating ? 'var(--active)' : 'var(--button-disabled)'};
+        border-color: ${(p: any) => p.activating ? 'var(--active-border)' : 'var(--border)'};
+        border-left-color: ${(p: any) => p.activating ? 'var(--active-text)' : getAccentColor(p.accent)};
         opacity: 1;
     }
 `
@@ -258,7 +258,7 @@ export const GateOpenButton = ({userId, device, zoneName, loadDevices}: GateOpen
         </ButtonContent>
         <ArrowCircle>
             {isActivating
-                ? <CircularProgress size={20} style={{color: '#946013'}}/>
+                ? <CircularProgress size={20} style={{color: 'var(--active-text)'}}/>
                 : <ArrowForwardIcon style={{transform: `rotate(${arrowDeg}deg)`, fontSize: '20px'}}/>
             }
         </ArrowCircle>

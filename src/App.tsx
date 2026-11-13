@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {styled} from "@mui/material";
 import {ThemeProvider, createTheme} from '@mui/material/styles';
@@ -16,11 +16,11 @@ import './App.css';
 import {IS_DEBUG} from "utils/constants";
 
 
-const theme = createTheme({
+const makeTheme = (dark: boolean) => createTheme({
     palette: {
-        mode: 'light',
+        mode: dark ? 'dark' : 'light',
         primary: {
-            main: '#3568ad',
+            main: dark ? '#91baff' : '#3568ad',
             dark: '#254e85',
             light: '#eaf1fb',
             contrastText: '#ffffff',
@@ -29,14 +29,14 @@ const theme = createTheme({
             main: '#64748b',
         },
         background: {
-            default: '#f4f6fa',
-            paper: '#ffffff',
+            default: dark ? '#101722' : '#f4f6fa',
+            paper: dark ? '#1b2635' : '#ffffff',
         },
         text: {
-            primary: '#233247',
-            secondary: '#64748b',
+            primary: dark ? '#e5edf8' : '#233247',
+            secondary: dark ? '#a5b5ca' : '#64748b',
         },
-        divider: '#e2e8f0',
+        divider: dark ? '#354459' : '#e2e8f0',
     },
     shape: {
         borderRadius: 12,
@@ -68,7 +68,7 @@ const theme = createTheme({
                 root: {
                     borderRadius: 20,
                     backgroundImage: 'none',
-                    border: '1px solid #e2e8f0',
+                    border: '1px solid var(--border)',
                     boxShadow: '0 8px 32px rgba(35, 50, 71, 0.05)',
                 },
             },
@@ -76,7 +76,7 @@ const theme = createTheme({
         MuiIconButton: {
             styleOverrides: {
                 root: {
-                    color: '#52647c',
+                    color: dark ? '#a5b5ca' : '#52647c',
                     borderRadius: 12,
                     '&:hover': {
                         backgroundColor: 'rgba(53, 104, 173, 0.08)',
@@ -88,7 +88,7 @@ const theme = createTheme({
             styleOverrides: {
                 root: {
                     '& .MuiOutlinedInput-root': {
-                        backgroundColor: '#f8fafc',
+                        backgroundColor: dark ? '#253247' : '#f8fafc',
                     },
                 },
             },
@@ -113,6 +113,24 @@ const Layout = styled(FlexBox)`
 function App() {
     const dispatch = useDispatch();
     const auth = useSelector(getAuth);
+    const [preferences, setPreferences] = useState<Record<string, 'light' | 'dark'>>(() => {
+        try {
+            const saved = JSON.parse(window.localStorage.getItem('eldes-theme') || '{}');
+            return saved && typeof saved === 'object' && !Array.isArray(saved) ? saved : {};
+        } catch { return {}; }
+    });
+    const themeKey = auth.isUserLoggedIn ? String(auth.user.user.id) : 'guest';
+    const dark = preferences[themeKey] === 'dark';
+    const theme = useMemo(() => makeTheme(dark), [dark]);
+    const toggleTheme = () => {
+        const next = {...preferences, [themeKey]: dark ? 'light' as const : 'dark' as const};
+        setPreferences(next);
+        try { window.localStorage.setItem('eldes-theme', JSON.stringify(next)); } catch { /* Keep the choice for this session. */ }
+    };
+    useEffect(() => {
+        document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#101722' : '#f4f6fa');
+    }, [dark]);
     const {
         user,
         isUserLoggedIn,
@@ -135,7 +153,7 @@ function App() {
             <div className="App">
                 {isCheckingToken && <Loading/>}
                 <Layout style={IS_DEBUG ? {background: '#f48ca7'} : {}}>
-                    <AppHeader/>
+                    <AppHeader dark={dark} onToggleTheme={toggleTheme}/>
                     <ViewContainer className="app-content">
                         {isUserLoggedIn && user?.token && !isCheckingToken ? <EldesController/> : <LoginView/>}
                     </ViewContainer>

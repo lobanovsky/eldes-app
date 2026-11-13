@@ -11,7 +11,7 @@ const LoadingMask = styled.div`
     top: 0;
     left: 0;
     z-index: 10;
-    background-color: rgba(244, 246, 250, 0.82);
+    background-color: var(--overlay);
 `
 
 export const Loading = ({text = ''}: { text?: string }) =>

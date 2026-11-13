@@ -3,7 +3,7 @@
     width: 100%;
     height: 100vh;
     height: 100dvh;
-    background: #f4f6fa;
+    background: var(--page);
 }
 
 #notistack-snackbar {
